@@ -11,8 +11,10 @@ client = discord.Client(intents=discord.Intents.default())
 
 async def query_chatgpt(prompt: str) -> str:
     response = await openai.ChatCompletion.acreate(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=[{"role": "user", "content": prompt}],
+        temperature=1,
+        top_p=0,
     )
     return response.choices[0].message['content']
 
