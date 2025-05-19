@@ -1,6 +1,7 @@
 import discord
 import openai
 import os
+import asyncio
 
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
@@ -8,6 +9,17 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 openai.api_key = OPENAI_API_KEY
 
 client = discord.Client(intents=discord.Intents.default())
+
+async def send_slow_message(channel: discord.abc.Messageable, text: str, delay: float = 0.05):
+    """Send a message with a typing effect by editing it character by character."""
+    sent_message = await channel.send(" ")
+    displayed = ""
+    async with channel.typing():
+        for ch in text:
+            displayed += ch
+            await sent_message.edit(content=displayed)
+            await asyncio.sleep(delay)
+    return sent_message
 
 async def query_chatgpt(prompt: str) -> str:
     response = await openai.ChatCompletion.acreate(
@@ -31,7 +43,7 @@ async def on_message(message: discord.Message):
         user_prompt = message.content[len('!ask '):]
         try:
             reply = await query_chatgpt(user_prompt)
-            await message.channel.send(reply)
+            await send_slow_message(message.channel, reply)
         except Exception as e:
             await message.channel.send('Error querying ChatGPT')
             print(e)
