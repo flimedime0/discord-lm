@@ -24,7 +24,8 @@ Run the bot using Python:
 python bot.py
 ```
 
-The bot uses OpenAI's `gpt-4o` model with `temperature=1` and `top_p=0` by default.
+The bot uses OpenAI's `o3` model by default. Parameters for this model are
+configured in `DEFAULT_O3_PARAMS` within `bot.py`.
 When the bot is running, send messages starting with `!ask` to interact with ChatGPT.
 
 ## GitHub Codespaces Quick Start

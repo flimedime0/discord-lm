@@ -9,6 +9,15 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 client_oai = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+DEFAULT_O3_PARAMS = {
+    "temperature": 1,
+    # optional tuning knobs you may want:
+    "max_tokens": None,
+    "stop": None,
+    "seed": None,
+    # "stream": False,
+}
+
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
@@ -39,12 +48,17 @@ async def send_slow_message(channel, text,
                 await asyncio.sleep(delay)
     return sent
 
-async def query_chatgpt(prompt: str) -> str:
+async def query_chatgpt(prompt: str,
+                        model: str = "o3",
+                        **overrides) -> str:
+    params = DEFAULT_O3_PARAMS.copy()
+    params.update(overrides)
+    params = {k: v for k, v in params.items() if v is not None}
+
     response = await client_oai.chat.completions.create(
-        model="gpt-4o",
+        model=model,
         messages=[{"role": "user", "content": prompt}],
-        temperature=1,
-        top_p=0,
+        **params,
     )
     return response.choices[0].message.content
 
