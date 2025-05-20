@@ -9,8 +9,9 @@ This repository contains a simple Discord bot that connects to the OpenAI ChatGP
    pip install -r requirements.txt
    ```
 2. Create a Discord application and bot in the [Discord Developer Portal](https://discord.com/developers/applications). Copy the bot token.
-3. Obtain an OpenAI API key.
-4. Copy `.env.example` to `.env` and fill in your credentials:
+3. In the **Bot** tab of the Developer Portal, enable the **Message Content Intent** so the bot can read message contents.
+4. Obtain an OpenAI API key.
+5. Copy `.env.example` to `.env` and fill in your credentials:
    ```bash
    cp .env.example .env
    # then edit .env to add your tokens
