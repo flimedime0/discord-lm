@@ -13,16 +13,20 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-async def send_slow_message(channel: discord.abc.Messageable, text: str, delay: float = 0.05):
-    """Send a message with a typing effect by editing it character by character."""
-    sent_message = await channel.send("…")
+async def send_slow_message(channel, text, chunk=32, delay=1.0):
+    """
+    Reveals text in 32-character chunks every second.
+    1 edit/sec respects Discord’s rate limit.
+    """
+    sent = await channel.send("…")        # non-empty placeholder
     displayed = ""
     async with channel.typing():
-        for ch in text:
+        for i, ch in enumerate(text, start=1):
             displayed += ch
-            await sent_message.edit(content=displayed)
-            await asyncio.sleep(delay)
-    return sent_message
+            if i % chunk == 0 or i == len(text):
+                await sent.edit(content=displayed)
+                await asyncio.sleep(delay)
+    return sent
 
 async def query_chatgpt(prompt: str) -> str:
     response = await client_oai.chat.completions.create(
