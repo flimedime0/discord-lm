@@ -97,28 +97,36 @@ async def send_slow_message(channel, text,
             hit_chunk = (i % chunk == 0) or (i == len(text))
             if hit_chunk:
                 if len(displayed) > max_len:
-                    split_at = displayed.rfind(".", 0, max_len)
-                    if split_at == -1:
-                        split_at = displayed.rfind(" ", 0, max_len)
+                    # provisional cut at Discord’s hard cap
+                    split_at = max_len - 1
 
-                    # --- URL protection (192-char lookback) ---
-                    url_match = URL_RE.search(displayed,
-                                              max(split_at - 192, 0),
-                                              split_at + 1)
-                    if url_match and url_match.end() > split_at:
-                        split_at = url_match.start() - 1  # keep space before link
-                    # -----------------------------------------
+                    # --- URL-safe split ----------------------------------------
+                    last_url = None
+                    for m in URL_RE.finditer(displayed, 0, split_at + 1):
+                        last_url = m                # keep the LAST url before cut
 
-                    if split_at == -1 or split_at < 0:
-                        split_at = max_len - 1
-                    segment = displayed[: split_at + 1]
+                    # if the cut lands inside that url, move before it
+                    if last_url and last_url.end() > split_at:
+                        split_at = last_url.start() - 1
+
+                    # if we’re mid-word, back up to previous space/period
+                    if displayed[split_at].isalnum():
+                        p = displayed.rfind(" ", 0, split_at)
+                        if p != -1:
+                            split_at = p
+                    # -----------------------------------------------------------
+
+                    segment   = displayed[: split_at + 1]
                     remainder = displayed[split_at + 1 :]
+
                     await sent.edit(content=segment.strip())
+
+                    # create new placeholder ONLY if there’s more text
                     if remainder.strip():
                         sent = await channel.send("…")
                         displayed = remainder.lstrip()
                     else:
-                        break
+                        break   # no leftover text → exit loop
                 else:
                     await sent.edit(content=displayed)
                 await asyncio.sleep(delay)
