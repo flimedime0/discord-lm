@@ -5,6 +5,7 @@ import os
 import asyncio
 import httpx
 import json
+import re
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -81,6 +82,8 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
+URL_RE = re.compile(r"https?://\S+")
+
 async def send_slow_message(channel, text,
                              chunk=192, delay=1.0, max_len=2000):
     """Reveals `text` in 192-char chunks every second.
@@ -96,12 +99,18 @@ async def send_slow_message(channel, text,
                 if len(displayed) > max_len:
                     split_at = displayed.rfind(".", 0, max_len)
                     if split_at == -1:
+                        split_at = displayed.rfind(" ", 0, max_len)
+
+                    # --- URL protection (192-char lookback) ---
+                    url_match = URL_RE.search(displayed,
+                                              max(split_at - 192, 0),
+                                              split_at + 1)
+                    if url_match and url_match.end() > split_at:
+                        split_at = url_match.start() - 1  # keep space before link
+                    # -----------------------------------------
+
+                    if split_at == -1 or split_at < 0:
                         split_at = max_len - 1
-                    else:
-                        # If a previous period is very close (<=12 chars), prefer that one
-                        prev = displayed.rfind(".", 0, split_at)
-                        if prev != -1 and (split_at - prev) <= 12:
-                            split_at = prev
                     segment = displayed[: split_at + 1]
                     remainder = displayed[split_at + 1 :]
                     await sent.edit(content=segment.strip())
