@@ -20,6 +20,16 @@ DEFAULT_O3_PARAMS = {
     # "stream": False,
 }
 
+# System prompt enforcing concise answers with numbered citations
+SYSTEM_CITE = (
+    "You are a helpful assistant. When you answer you must\n"
+    "\u2022 rely only on the JSON provided by the web_search tool\n"
+    "\u2022 write no more than four sentences\n"
+    "\u2022 cite each distinct fact with [n] where n is a source number\n"
+    "\u2022 after your answer add a Sources list of numbered links, one per cited URL, e.g.:\n"
+    "Sources:\n[1] <url1>\n[2] <url2>"
+)
+
 SEARCH_TOOL = {
     "type": "function",
     "function": {
@@ -130,15 +140,16 @@ async def query_chatgpt(prompt: str,
             args.get("num_results", 5)
         )
 
-        # Build conversation so far
+        # Build conversation so far with citation rules
         history = [
-            {"role": "user", "content": prompt},
-            msg,
+            {"role": "system", "content": SYSTEM_CITE},
+            {"role": "user",   "content": prompt},
+            msg,  # assistant message containing tool_calls
             {
                 "role": "tool",
                 "tool_call_id": call.id,
                 "name": "web_search",
-                "content": result_json,
+                "content": result_json
             },
         ]
 
