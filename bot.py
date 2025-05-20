@@ -3,6 +3,8 @@ from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import os
 import asyncio
+import httpx
+import json
 
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
@@ -17,6 +19,37 @@ DEFAULT_O3_PARAMS = {
     "seed": None,
     # "stream": False,
 }
+
+SEARCH_TOOL = {
+    "name": "web_search",
+    "description": "Search the public internet for up-to-date information.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {"type": "string", "description": "Search query"},
+            "num_results": {
+                "type": "integer",
+                "description": "How many results (1-10)",
+                "default": 5,
+            },
+        },
+        "required": ["query"],
+    },
+}
+
+async def do_search(query: str, num_results: int = 5) -> str:
+    """Return a short JSON string of search results from DuckDuckGo."""
+    url = "https://api.duckduckgo.com/"
+    params = {"q": query, "format": "json", "no_redirect": 1}
+    async with httpx.AsyncClient() as client:
+        r = await client.get(url, params=params, timeout=10)
+        data = r.json()
+    related = data.get("RelatedTopics", [])[:num_results]
+    snippets = [
+        {"title": t.get("Text", ""), "url": t.get("FirstURL", "")}
+        for t in related if "Text" in t
+    ]
+    return json.dumps(snippets, ensure_ascii=False)
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -51,16 +84,43 @@ async def send_slow_message(channel, text,
 async def query_chatgpt(prompt: str,
                         model: str = "o3",
                         **overrides) -> str:
-    params = DEFAULT_O3_PARAMS.copy()
-    params.update(overrides)
-    params = {k: v for k, v in params.items() if v is not None}
+    params = {k: v for k, v in (DEFAULT_O3_PARAMS | overrides).items()
+              if v is not None}
 
-    response = await client_oai.chat.completions.create(
+    # 1st request – let the model decide if it needs search
+    r1 = await client_oai.chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": prompt}],
+        tools=[SEARCH_TOOL],
+        tool_choice="auto",
         **params,
     )
-    return response.choices[0].message.content
+    msg = r1.choices[0].message
+
+    # If the model called web_search:
+    if msg.tool_calls:
+        call = msg.tool_calls[0]
+        args = json.loads(call.function.arguments)
+        result_json = await do_search(args["query"], args.get("num_results", 5))
+
+        # 2nd request – give the search results back
+        r2 = await client_oai.chat.completions.create(
+            model=model,
+            messages=[
+                {"role": "user", "content": prompt},
+                msg,  # assistant tool-call message
+                {
+                    "role": "tool",
+                    "name": "web_search",
+                    "content": result_json
+                },
+            ],
+            **params,
+        )
+        return r2.choices[0].message.content
+
+    # No search needed
+    return msg.content
 
 @client.event
 async def on_ready():
