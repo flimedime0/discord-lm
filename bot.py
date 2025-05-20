@@ -15,7 +15,7 @@ client = discord.Client(intents=intents)
 
 async def send_slow_message(channel: discord.abc.Messageable, text: str, delay: float = 0.05):
     """Send a message with a typing effect by editing it character by character."""
-    sent_message = await channel.send(" ")
+    sent_message = await channel.send("…")
     displayed = ""
     async with channel.typing():
         for ch in text:
