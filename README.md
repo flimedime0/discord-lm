@@ -1,5 +1,9 @@
 # Discord ChatGPT Bot
 
+![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Black](https://img.shields.io/badge/code%20style-black-000000)
+
 This repository contains a simple Discord bot that connects to the OpenAI ChatGPT API. When a user @-mentions the bot, e.g. `@YourBot what is 2+2?`, the bot forwards the prompt to ChatGPT and replies with the response. The bot replies whenever it's mentioned in a message.
 
 ## Setup
@@ -17,6 +21,11 @@ This repository contains a simple Discord bot that connects to the OpenAI ChatGP
    # then edit .env to add your tokens
    ```
 6. Set `GOOGLE_API_KEY` and `GOOGLE_CSE_ID` in `.env` for web search.
+
+## Package Layout
+
+The bot code resides in `src/discord_lm_bot/`. Run the bot via `discord_lm_bot.run_bot`
+or import `discord_lm_bot.query_chatgpt` for custom integrations.
 
 ## Running
 
@@ -70,3 +79,8 @@ Responses are split into 2 000-character chunks. URLs are never cut in half.
 If a chunk ends in the middle of a word, the bot backs up to the previous
 space or period. A new placeholder message is created only when there is more
 content so blank `...` messages are avoided.
+
+## Formatted with Black & Ruff
+
+This project uses [Black](https://github.com/psf/black) and
+[Ruff](https://github.com/astral-sh/ruff) for automatic formatting and linting.

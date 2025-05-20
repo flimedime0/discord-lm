@@ -2,3 +2,5 @@ openai>=1.0.0
 discord.py
 python-dotenv
 httpx
+black
+ruff
