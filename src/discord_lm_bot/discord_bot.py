@@ -60,6 +60,9 @@ async def send_slow_message(channel, text, chunk=192, delay=1.0, max_len=2000):
                 else:
                     await sent.edit(content=displayed)
                 await asyncio.sleep(delay)
+
+        if displayed:
+            await sent.edit(content=displayed)
     return sent
 
 
