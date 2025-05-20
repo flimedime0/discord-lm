@@ -28,7 +28,7 @@ async def send_slow_message(channel, text, chunk=192, delay=1.0, max_len=2000):
             if hit_chunk:
                 if len(displayed) > max_len:
                     # provisional cut at Discord’s hard cap
-                    split_at = 1999
+                    split_at = max_len - 1
 
                     # walk backward for the last URL before the split point
                     last_url = None
@@ -36,7 +36,7 @@ async def send_slow_message(channel, text, chunk=192, delay=1.0, max_len=2000):
                         last_url = m
 
                     if last_url and last_url.end() > split_at:
-                        split_at = last_url.start() - 1
+                        split_at = max(0, last_url.start() - 1)
 
                     # if still mid-word, back up to previous space or period
                     if displayed[split_at].isalnum():
