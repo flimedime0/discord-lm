@@ -13,18 +13,24 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-async def send_slow_message(channel, text, chunk=32, delay=1.0):
-    """
-    Reveals text in 32-character chunks every second.
-    1 edit/sec respects Discord’s rate limit.
-    """
-    sent = await channel.send("…")        # non-empty placeholder
+async def send_slow_message(channel, text,
+                             chunk=192, delay=1.0, max_len=2000):
+    """Types `text` in 192-char chunks every second.
+    If the content would exceed 2 000 chars, starts a new message."""
+    sent = await channel.send("…")     # placeholder
     displayed = ""
     async with channel.typing():
         for i, ch in enumerate(text, start=1):
             displayed += ch
+            # time to edit?
             if i % chunk == 0 or i == len(text):
-                await sent.edit(content=displayed)
+                # if next edit would exceed Discord's 2000-char cap
+                if len(displayed) > max_len:
+                    # start a fresh message chain
+                    sent = await channel.send(displayed[-chunk:])
+                    displayed = displayed[-chunk:]
+                else:
+                    await sent.edit(content=displayed)
                 await asyncio.sleep(delay)
     return sent
 
