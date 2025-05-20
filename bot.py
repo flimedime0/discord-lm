@@ -7,6 +7,7 @@ import httpx
 import json
 import re
 
+URL_RE = re.compile(r"https?://\S+")
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
@@ -21,11 +22,10 @@ DEFAULT_O3_PARAMS = {
     # "stream": False,
 }
 
-# System prompt enforcing concise answers with numbered citations
+# System prompt enforcing inline citations with a source list
 SYSTEM_CITE = (
-    "When you state a fact that comes from web_search, place a citation "
-    "after the period in the form [[SiteName]](URL). Do not add a Sources "
-    "block. Speak naturally; cite only facts that need attribution."
+    "After answering, add a line 'Sources:' followed by every URL from "
+    "web_search, one per line. Speak naturally."
 )
 
 SEARCH_TOOL = {
@@ -82,7 +82,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
 
-URL_RE = re.compile(r"https?://\S+")
 
 async def send_slow_message(channel, text,
                              chunk=192, delay=1.0, max_len=2000):
@@ -98,26 +97,27 @@ async def send_slow_message(channel, text,
             if hit_chunk:
                 if len(displayed) > max_len:
                     # provisional cut at Discord’s hard cap
-                    split_at = max_len - 1
+                    split_at = 1999
 
-                    # --- URL-safe split ----------------------------------------
+                    # walk backward for the last URL before the split point
                     last_url = None
                     for m in URL_RE.finditer(displayed, 0, split_at + 1):
-                        last_url = m                # keep the LAST url before cut
+                        last_url = m
 
-                    # if the cut lands inside that url, move before it
                     if last_url and last_url.end() > split_at:
                         split_at = last_url.start() - 1
 
-                    # if we’re mid-word, back up to previous space/period
+                    # if still mid-word, back up to previous space or period
                     if displayed[split_at].isalnum():
-                        p = displayed.rfind(" ", 0, split_at)
+                        p_space = displayed.rfind(" ", 0, split_at)
+                        p_dot = displayed.rfind(".", 0, split_at)
+                        p = max(p_space, p_dot)
                         if p != -1:
                             split_at = p
-                    # -----------------------------------------------------------
 
-                    segment   = displayed[: split_at + 1]
+                    segment = displayed[: split_at + 1]
                     remainder = displayed[split_at + 1 :]
+
 
                     await sent.edit(content=segment.strip())
 

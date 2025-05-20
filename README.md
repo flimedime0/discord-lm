@@ -41,3 +41,32 @@ cp .env.example .env
 # edit .env and add your tokens
 python bot.py
 ```
+
+## Quick Start
+
+```bash
+git clone <repo-url>
+cd discord-lm-app
+cp .env.example .env
+python bot.py
+```
+
+## Data Flow
+
+Discord message → bot → OpenAI → Google CSE → Discord.
+
+## Environment Variables
+
+| Name | Purpose |
+|------|---------|
+| `DISCORD_TOKEN` | Discord bot token |
+| `OPENAI_API_KEY` | OpenAI API key |
+| `GOOGLE_API_KEY` | Google API key |
+| `GOOGLE_CSE_ID` | Google Custom Search Engine ID |
+
+## Message Length Handling
+
+Responses are split into 2 000-character chunks. URLs are never cut in half.
+If a chunk ends in the middle of a word, the bot backs up to the previous
+space or period. A new placeholder message is created only when there is more
+content so blank `...` messages are avoided.
