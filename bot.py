@@ -44,18 +44,31 @@ SEARCH_TOOL = {
 }
 
 async def do_search(query: str, num_results: int = 5) -> str:
-    """Return a short JSON string of search results from DuckDuckGo."""
-    url = "https://api.duckduckgo.com/"
-    params = {"q": query, "format": "json", "no_redirect": 1}
+    """Return Google CSE results (title + link) as JSON string."""
+    import httpx, os, json
+
+    api_key = os.getenv("GOOGLE_API_KEY")
+    cse_id  = os.getenv("GOOGLE_CSE_ID")
+    if not api_key or not cse_id:
+        return json.dumps([{"error": "Google CSE keys not set"}])
+
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": api_key,
+        "cx":  cse_id,
+        "q":   query,
+        "num": min(max(num_results, 1), 10)
+    }
     async with httpx.AsyncClient() as client:
         r = await client.get(url, params=params, timeout=10)
         data = r.json()
-    related = data.get("RelatedTopics", [])[:num_results]
-    snippets = [
-        {"title": t.get("Text", ""), "url": t.get("FirstURL", "")}
-        for t in related if "Text" in t
+
+    items = data.get("items", [])
+    results = [
+        {"title": it["title"], "url": it["link"], "snippet": it["snippet"]}
+        for it in items
     ]
-    return json.dumps(snippets, ensure_ascii=False)
+    return json.dumps(results, ensure_ascii=False)
 
 intents = discord.Intents.default()
 intents.message_content = True
