@@ -21,19 +21,25 @@ DEFAULT_O3_PARAMS = {
 }
 
 SEARCH_TOOL = {
-    "name": "web_search",
-    "description": "Search the public internet for up-to-date information.",
-    "parameters": {
-        "type": "object",
-        "properties": {
-            "query": {"type": "string", "description": "Search query"},
-            "num_results": {
-                "type": "integer",
-                "description": "How many results (1-10)",
-                "default": 5,
+    "type": "function",
+    "function": {
+        "name": "web_search",
+        "description": "Search the public internet for up-to-date information.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Search query",
+                },
+                "num_results": {
+                    "type": "integer",
+                    "description": "How many results (1-10)",
+                    "default": 5,
+                },
             },
+            "required": ["query"],
         },
-        "required": ["query"],
     },
 }
 
@@ -97,24 +103,30 @@ async def query_chatgpt(prompt: str,
     )
     msg = r1.choices[0].message
 
-    # If the model called web_search:
+    # msg is the assistant message that requested the tool
     if msg.tool_calls:
         call = msg.tool_calls[0]
         args = json.loads(call.function.arguments)
-        result_json = await do_search(args["query"], args.get("num_results", 5))
+        result_json = await do_search(
+            args["query"],
+            args.get("num_results", 5)
+        )
 
-        # 2nd request – give the search results back
+        # Build conversation so far
+        history = [
+            {"role": "user", "content": prompt},
+            msg,
+            {
+                "role": "tool",
+                "tool_call_id": call.id,
+                "name": "web_search",
+                "content": result_json,
+            },
+        ]
+
         r2 = await client_oai.chat.completions.create(
             model=model,
-            messages=[
-                {"role": "user", "content": prompt},
-                msg,  # assistant tool-call message
-                {
-                    "role": "tool",
-                    "name": "web_search",
-                    "content": result_json
-                },
-            ],
+            messages=history,
             **params,
         )
         return r2.choices[0].message.content
