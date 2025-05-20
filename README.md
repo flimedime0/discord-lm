@@ -26,9 +26,12 @@ Run the bot using Python:
 python bot.py
 ```
 
-The bot uses OpenAI's `o3` model by default. Parameters for this model are
-configured in `DEFAULT_O3_PARAMS` within `bot.py`.
-When the bot is running, mention it with a question (e.g. `@YourBot what is 2+2?`) and it will reply.
+The bot uses OpenAI's `o3` model by default. Parameters for the current model are
+configured in `DEFAULT_PARAMS` within `bot.py` and can be overridden using
+environment variables like `OAI_TEMPERATURE` and `OAI_MAX_TOKENS`.
+When the bot is running, mention it with a question (e.g. `@YourBot what is 2+2?`)
+or use the `/chat` slash command to talk to it. The `/options` command lets you
+switch between the `o3` and `4o` models and adjust parameters at runtime.
 - If configured with Google credentials, the bot may search the web via Google Custom Search when it needs additional context. Manual search commands are not supported.
 
 ## GitHub Codespaces Quick Start
@@ -63,6 +66,12 @@ Discord message → bot → OpenAI → Google CSE → Discord.
 | `OPENAI_API_KEY` | OpenAI API key |
 | `GOOGLE_API_KEY` | Google API key |
 | `GOOGLE_CSE_ID` | Google Custom Search Engine ID |
+| `OAI_TEMPERATURE` | OpenAI model temperature |
+| `OAI_TOP_P` | Nucleus sampling top_p |
+| `OAI_MAX_TOKENS` | Max tokens for responses |
+| `OAI_STOP` | Stop sequence |
+| `OAI_SEED` | Integer seed for the model |
+| `OAI_MODEL` | Default model (`o3` or `4o`) |
 
 ## Message Length Handling
 

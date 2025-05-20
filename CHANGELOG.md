@@ -1,6 +1,7 @@
 # Changelog
 
 ## Unreleased
+- Slash commands `/chat` and `/options` for chatting and runtime configuration.
 
 ## v0.1.0 - 2025-05-20
 - Google CSE integration.

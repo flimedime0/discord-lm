@@ -1,4 +1,5 @@
 import discord
+from discord import app_commands
 from openai import AsyncOpenAI
 from dotenv import load_dotenv
 import os
@@ -6,21 +7,35 @@ import asyncio
 import httpx
 import json
 import re
+import traceback
 
 URL_RE = re.compile(r"https?://\S+")
 load_dotenv()
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-client_oai = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client_oai = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
-DEFAULT_O3_PARAMS = {
-    "temperature": 1,
-    # optional tuning knobs you may want:
-    "max_tokens": None,
-    "stop": None,
-    "seed": None,
+DEFAULT_PARAMS = {
+    "temperature": float(os.getenv("OAI_TEMPERATURE", "1")),
+    "top_p": float(os.getenv("OAI_TOP_P", "1")),
+    "max_tokens": (
+        int(os.getenv("OAI_MAX_TOKENS"))
+        if os.getenv("OAI_MAX_TOKENS")
+        else None
+    ),
+    "stop": os.getenv("OAI_STOP"),
+    "seed": (
+        int(os.getenv("OAI_SEED")) if os.getenv("OAI_SEED") else None
+    ),
     # "stream": False,
 }
+
+MODEL_SETTINGS = {
+    "o3": DEFAULT_PARAMS.copy(),
+    "4o": DEFAULT_PARAMS.copy(),
+}
+
+CURRENT_MODEL = os.getenv("OAI_MODEL", "o3")
 
 # System prompt enforcing inline citations with a source list
 SYSTEM_CITE = (
@@ -53,7 +68,6 @@ SEARCH_TOOL = {
 
 async def do_search(query: str, num_results: int = 8) -> str:
     """Return Google CSE results (title + link) as JSON string."""
-    import httpx, os, json
 
     api_key = os.getenv("GOOGLE_API_KEY")
     cse_id  = os.getenv("GOOGLE_CSE_ID")
@@ -65,7 +79,7 @@ async def do_search(query: str, num_results: int = 8) -> str:
         "key": api_key,
         "cx":  cse_id,
         "q":   query,
-        "num": 8,
+        "num": max(1, min(num_results, 10)),
     }
     async with httpx.AsyncClient() as client:
         r = await client.get(url, params=params, timeout=10)
@@ -81,6 +95,64 @@ async def do_search(query: str, num_results: int = 8) -> str:
 intents = discord.Intents.default()
 intents.message_content = True
 client = discord.Client(intents=intents)
+
+
+@client.tree.command(name="chat", description="Ask ChatGPT")
+@app_commands.describe(prompt="Your question")
+async def slash_chat(interaction: discord.Interaction, prompt: str):
+    await interaction.response.defer(thinking=True)
+    try:
+        reply = await query_chatgpt(
+            prompt,
+            model=CURRENT_MODEL,
+            **MODEL_SETTINGS[CURRENT_MODEL],
+        )
+        await send_slow_message(interaction.channel, reply)
+    except Exception as e:
+        await interaction.followup.send(f"Error: {e}", ephemeral=True)
+        traceback.print_exc()
+
+
+@client.tree.command(name="options", description="View or set model options")
+@app_commands.describe(
+    model="Model to configure (o3 or 4o)",
+    temperature="Model temperature",
+    top_p="Nucleus sampling top_p",
+    max_tokens="Maximum tokens in reply",
+)
+async def slash_options(
+    interaction: discord.Interaction,
+    model: str | None = None,
+    temperature: float | None = None,
+    top_p: float | None = None,
+    max_tokens: int | None = None,
+):
+    global CURRENT_MODEL
+    target = model or CURRENT_MODEL
+    if target not in MODEL_SETTINGS:
+        await interaction.response.send_message(
+            "Model must be 'o3' or '4o'",
+            ephemeral=True,
+        )
+        return
+
+    if model:
+        CURRENT_MODEL = model
+
+    opts = MODEL_SETTINGS[target]
+    if temperature is not None:
+        opts["temperature"] = temperature
+    if top_p is not None:
+        opts["top_p"] = top_p
+    if max_tokens is not None:
+        opts["max_tokens"] = max_tokens
+
+    await interaction.response.send_message(
+        f"Current model: {CURRENT_MODEL}\n"
+        f"{target} options: temperature={opts['temperature']}, "
+        f"top_p={opts['top_p']}, max_tokens={opts['max_tokens']}",
+        ephemeral=True,
+    )
 
 
 async def send_slow_message(channel, text,
@@ -135,7 +207,7 @@ async def send_slow_message(channel, text,
 async def query_chatgpt(prompt: str,
                         model: str = "o3",
                         **overrides) -> str:
-    params = {k: v for k, v in (DEFAULT_O3_PARAMS | overrides).items()
+    params = {k: v for k, v in (DEFAULT_PARAMS | overrides).items()
               if v is not None}
 
     # 1st request – let the model decide if it needs search unless forced
@@ -153,7 +225,8 @@ async def query_chatgpt(prompt: str,
         call = msg.tool_calls[0]
         args = json.loads(call.function.arguments)
         result_json = await do_search(
-            args["query"]
+            args["query"],
+            args.get("num_results", 8),
         )
 
         # Build conversation so far with citation rules
@@ -184,6 +257,11 @@ async def query_chatgpt(prompt: str,
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
+    try:
+        synced = await client.tree.sync()
+        print(f"Slash commands synced: {len(synced)}")
+    except Exception as e:
+        print(f"Failed to sync commands: {e}")
 
 @client.event
 async def on_message(message: discord.Message):
@@ -205,11 +283,15 @@ async def on_message(message: discord.Message):
 
         try:
             async with message.channel.typing():
-                reply = await query_chatgpt(prompt)
+                reply = await query_chatgpt(
+                    prompt,
+                    model=CURRENT_MODEL,
+                    **MODEL_SETTINGS[CURRENT_MODEL],
+                )
             await send_slow_message(message.channel, reply)
         except Exception as e:
-            await message.channel.send("Error querying ChatGPT.")
-            print(e)
+            await message.channel.send(f"Error: {e}")
+            traceback.print_exc()
 
     # else: ignore message (no command prefix needed)
 
@@ -217,4 +299,6 @@ if __name__ == '__main__':
     if not DISCORD_TOKEN or not OPENAI_API_KEY:
         print('Environment variables DISCORD_TOKEN and OPENAI_API_KEY must be set.')
     else:
+        if not os.getenv('GOOGLE_API_KEY') or not os.getenv('GOOGLE_CSE_ID'):
+            print('Google search disabled (GOOGLE_API_KEY or GOOGLE_CSE_ID not set)')
         client.run(DISCORD_TOKEN)
