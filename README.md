@@ -56,6 +56,7 @@ python bot.py
 ```bash
 git clone <repo-url>
 cd discord-lm-app
+pre-commit install  # devcontainer does this automatically
 cp .env.example .env
 python bot.py
 ```
