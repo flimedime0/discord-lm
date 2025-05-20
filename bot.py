@@ -114,8 +114,11 @@ async def send_slow_message(channel, text,
                     segment = displayed[: split_at + 1]
                     remainder = displayed[split_at + 1 :]
                     await sent.edit(content=segment.strip())
-                    sent = await channel.send("…")
-                    displayed = remainder.lstrip()
+                    if remainder.strip():
+                        sent = await channel.send("…")
+                        displayed = remainder.lstrip()
+                    else:
+                        break
                 else:
                     await sent.edit(content=displayed)
                 await asyncio.sleep(delay)
