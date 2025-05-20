@@ -68,21 +68,34 @@ async def on_ready():
 
 @client.event
 async def on_message(message: discord.Message):
+    # ignore messages from ourselves
     if message.author == client.user:
         return
 
-    if message.content.startswith('!ask'):
-        user_prompt = message.content[len('!ask '):]
+    # respond only if the bot is mentioned
+    if client.user in message.mentions:
+        # strip the mention text from the prompt
+        prompt = message.content
+        for mention in message.mentions:
+            if mention == client.user:
+                prompt = prompt.replace(f"<@{mention.id}>", "").strip()
+
+        if not prompt:
+            await message.channel.send("Ask me something after the mention.")
+            return
+
         try:
             async with message.channel.typing():
-                reply = await query_chatgpt(user_prompt)
+                reply = await query_chatgpt(prompt)
             await send_slow_message(message.channel, reply)
         except Exception as e:
-            await message.channel.send('Error querying ChatGPT')
+            await message.channel.send("Error querying ChatGPT.")
             print(e)
+
+    # else: ignore message (no command prefix needed)
 
 if __name__ == '__main__':
     if not DISCORD_TOKEN or not OPENAI_API_KEY:
-        print('Environment variables DISCORD_TOKEN and OPENAI_API_KEY must be set')
+        print('Environment variables DISCORD_TOKEN and OPENAI_API_KEY must be set.')
     else:
         client.run(DISCORD_TOKEN)
