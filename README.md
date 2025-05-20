@@ -27,6 +27,7 @@ python bot.py
 The bot uses OpenAI's `o3` model by default. Parameters for this model are
 configured in `DEFAULT_O3_PARAMS` within `bot.py`.
 When the bot is running, mention it with a question (e.g. `@YourBot what is 2+2?`) and it will reply.
+- The bot can now search the web via DuckDuckGo.
 
 ## GitHub Codespaces Quick Start
 
