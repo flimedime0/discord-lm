@@ -90,6 +90,11 @@ async def send_slow_message(channel, text,
                     split_at = displayed.rfind(".", 0, max_len)
                     if split_at == -1:
                         split_at = max_len - 1
+                    else:
+                        # If a previous period is very close (<=12 chars), prefer that one
+                        prev = displayed.rfind(".", 0, split_at)
+                        if prev != -1 and (split_at - prev) <= 12:
+                            split_at = prev
                     segment = displayed[: split_at + 1]
                     remainder = displayed[split_at + 1 :]
                     await sent.edit(content=segment.strip())
