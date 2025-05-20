@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - pre-commit hooks (Black, Ruff, EOF fixer)
+- Basic GitHub Actions CI (Black, Ruff, pytest).
 
 ## [0.1.0] – 2025-05-20
 ### Added
