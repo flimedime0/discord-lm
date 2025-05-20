@@ -15,6 +15,7 @@ This repository contains a simple Discord bot that connects to the OpenAI ChatGP
    cp .env.example .env
    # then edit .env to add your tokens
    ```
+5. Set `GOOGLE_API_KEY` and `GOOGLE_CSE_ID` in `.env` for web search.
 
 ## Running
 
@@ -27,7 +28,7 @@ python bot.py
 The bot uses OpenAI's `o3` model by default. Parameters for this model are
 configured in `DEFAULT_O3_PARAMS` within `bot.py`.
 When the bot is running, mention it with a question (e.g. `@YourBot what is 2+2?`) and it will reply.
-- The bot can now search the web via DuckDuckGo. To force a web search, start your question with `search the internet` followed by the query.
+- The bot can search the web via Google Custom Search. To force a web search, start your question with `search the internet` followed by the query.
 
 ## GitHub Codespaces Quick Start
 
