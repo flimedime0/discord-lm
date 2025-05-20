@@ -22,12 +22,9 @@ DEFAULT_O3_PARAMS = {
 
 # System prompt enforcing concise answers with numbered citations
 SYSTEM_CITE = (
-    "You are a helpful assistant. When you answer you must\n"
-    "\u2022 rely only on the JSON provided by the web_search tool\n"
-    "\u2022 write no more than four sentences\n"
-    "\u2022 cite each distinct fact with [n] where n is a source number\n"
-    "\u2022 after your answer add a Sources list of numbered links, one per cited URL, e.g.:\n"
-    "Sources:\n[1] <url1>\n[2] <url2>"
+    "When you state a fact that comes from web_search, place a citation "
+    "after the period in the form [[SiteName]](URL). Do not add a Sources "
+    "block. Speak naturally; cite only facts that need attribution."
 )
 
 SEARCH_TOOL = {
@@ -53,7 +50,7 @@ SEARCH_TOOL = {
     },
 }
 
-async def do_search(query: str, num_results: int = 5) -> str:
+async def do_search(query: str, num_results: int = 8) -> str:
     """Return Google CSE results (title + link) as JSON string."""
     import httpx, os, json
 
@@ -67,7 +64,7 @@ async def do_search(query: str, num_results: int = 5) -> str:
         "key": api_key,
         "cx":  cse_id,
         "q":   query,
-        "num": min(max(num_results, 1), 10)
+        "num": 8,
     }
     async with httpx.AsyncClient() as client:
         r = await client.get(url, params=params, timeout=10)
@@ -136,22 +133,23 @@ async def query_chatgpt(prompt: str,
         call = msg.tool_calls[0]
         args = json.loads(call.function.arguments)
         result_json = await do_search(
-            args["query"],
-            args.get("num_results", 5)
+            args["query"]
         )
 
         # Build conversation so far with citation rules
-        history = [
-            {"role": "system", "content": SYSTEM_CITE},
-            {"role": "user",   "content": prompt},
+        history = []
+        if SYSTEM_CITE:
+            history.append({"role": "system", "content": SYSTEM_CITE})
+        history.extend([
+            {"role": "user", "content": prompt},
             msg,  # assistant message containing tool_calls
             {
                 "role": "tool",
                 "tool_call_id": call.id,
                 "name": "web_search",
-                "content": result_json
+                "content": result_json,
             },
-        ]
+        ])
 
         r2 = await client_oai.chat.completions.create(
             model=model,
