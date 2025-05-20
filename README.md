@@ -1,6 +1,6 @@
 # Discord ChatGPT Bot
 
-This repository contains a simple Discord bot that connects to the OpenAI ChatGPT API. When a user types `!ask <your question>` in a Discord channel, the bot forwards the prompt to ChatGPT and replies with the response.
+This repository contains a simple Discord bot that connects to the OpenAI ChatGPT API. When a user @-mentions the bot, e.g. `@YourBot what is 2+2?`, the bot forwards the prompt to ChatGPT and replies with the response. The bot replies whenever it's mentioned in a message.
 
 ## Setup
 
@@ -26,7 +26,7 @@ python bot.py
 
 The bot uses OpenAI's `o3` model by default. Parameters for this model are
 configured in `DEFAULT_O3_PARAMS` within `bot.py`.
-When the bot is running, send messages starting with `!ask` to interact with ChatGPT.
+When the bot is running, mention it with a question (e.g. `@YourBot what is 2+2?`) and it will reply.
 
 ## GitHub Codespaces Quick Start
 
