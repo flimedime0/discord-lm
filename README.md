@@ -3,6 +3,7 @@
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Black](https://img.shields.io/badge/code%20style-black-000000)
+![CI](https://github.com/<USER>/discord-lm-app/actions/workflows/ci.yml/badge.svg)
 
 This repository contains a simple Discord bot that connects to the OpenAI ChatGPT API. When a user @-mentions the bot, e.g. `@YourBot what is 2+2?`, the bot forwards the prompt to ChatGPT and replies with the response. The bot replies whenever it's mentioned in a message.
 
