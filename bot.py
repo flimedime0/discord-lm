@@ -107,7 +107,6 @@ async def send_slow_message(channel, text,
 
 async def query_chatgpt(prompt: str,
                         model: str = "o3",
-                        force_search: bool = False,
                         **overrides) -> str:
     params = {k: v for k, v in (DEFAULT_O3_PARAMS | overrides).items()
               if v is not None}
@@ -117,10 +116,7 @@ async def query_chatgpt(prompt: str,
         model=model,
         messages=[{"role": "user", "content": prompt}],
         tools=[SEARCH_TOOL],
-        tool_choice=(
-            {"type": "function", "function": {"name": "web_search"}}
-            if force_search else "auto"
-        ),
+        tool_choice="auto",
         **params,
     )
     msg = r1.choices[0].message
@@ -178,18 +174,9 @@ async def on_message(message: discord.Message):
             await message.channel.send("Ask me something after the mention.")
             return
 
-        # check for forced web search command
-        force_search = False
-        lowered = prompt.lower()
-        for trigger in ("search the internet", "search the web"):
-            if lowered.startswith(trigger):
-                prompt = prompt[len(trigger):].lstrip()
-                force_search = True
-                break
-
         try:
             async with message.channel.typing():
-                reply = await query_chatgpt(prompt, force_search=force_search)
+                reply = await query_chatgpt(prompt)
             await send_slow_message(message.channel, reply)
         except Exception as e:
             await message.channel.send("Error querying ChatGPT.")
