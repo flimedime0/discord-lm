@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - pre-commit hooks (Black, Ruff, EOF fixer)
 - Basic GitHub Actions CI (Black, Ruff, pytest).
+### Fixed
+- URLs are no longer split across message boundaries.
 
 ## [0.1.0] – 2025-05-20
 ### Added
