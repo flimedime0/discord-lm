@@ -43,7 +43,7 @@ SEARCH_TOOL = {
                 "num_results": {
                     "type": "integer",
                     "description": "How many results (1-10)",
-                    "default": 5,
+                    "default": 8,
                 },
             },
             "required": ["query"],
@@ -65,7 +65,7 @@ async def do_search(query: str, num_results: int = 8) -> str:
         "key": api_key,
         "cx":  cse_id,
         "q":   query,
-        "num": 8,
+        "num": num_results,
     }
     async with httpx.AsyncClient() as client:
         r = await client.get(url, params=params, timeout=10)
@@ -135,8 +135,9 @@ async def send_slow_message(channel, text,
 async def query_chatgpt(prompt: str,
                         model: str = "o3",
                         **overrides) -> str:
-    params = {k: v for k, v in (DEFAULT_O3_PARAMS | overrides).items()
-              if v is not None}
+    merged = DEFAULT_O3_PARAMS.copy()
+    merged.update(overrides)
+    params = {k: v for k, v in merged.items() if v is not None}
 
     # 1st request – let the model decide if it needs search unless forced
     r1 = await client_oai.chat.completions.create(
@@ -153,7 +154,8 @@ async def query_chatgpt(prompt: str,
         call = msg.tool_calls[0]
         args = json.loads(call.function.arguments)
         result_json = await do_search(
-            args["query"]
+            args["query"],
+            args.get("num_results", 8),
         )
 
         # Build conversation so far with citation rules
