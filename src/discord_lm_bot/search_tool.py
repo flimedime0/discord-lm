@@ -35,7 +35,7 @@ async def do_search(query: str, num_results: int = 8) -> str:
         return json.dumps([{"error": "Google CSE keys not set"}])
 
     url = "https://www.googleapis.com/customsearch/v1"
-    params = {
+    params: dict[str, str | int | None] = {
         "key": api_key,
         "cx": cse_id,
         "q": query,

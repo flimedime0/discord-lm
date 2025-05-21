@@ -1,6 +1,7 @@
 black
 discord.py
 httpx
+mypy
 openai>=1.0.0
 pre-commit
 pytest
