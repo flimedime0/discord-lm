@@ -21,4 +21,6 @@ jobs:
       - name: Lint (Ruff)
         run: ruff check .
       - name: Tests
-        run: pytest -q || echo "pytest skipped (no tests yet)"
+        env:
+          OPENAI_API_KEY: "dummy"
+        run: python -m pytest -q
