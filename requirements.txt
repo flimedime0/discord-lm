@@ -7,4 +7,6 @@ pre-commit
 pytest
 pytest-asyncio
 python-dotenv
+rich
 ruff
+tenacity
