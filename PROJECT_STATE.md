@@ -11,12 +11,12 @@
 - test-splitter-12
 - fix-ci-openai-24
 - logging-retry-15
+- docs-mkdocs-17
 
 ## Backlog
 | ID | Scope | Status |
 | dockerize-13 | Dockerfile & compose | next |
 | mypy-baseline-14 | add type hints & mypy | queued |
-| docs-mkdocs-17 | nice docs site | queued |
 | coverage-18 | pytest-cov, badge | queued |
 | dependabot-release-16 | weekly bumps, semantic-release | queued |
 

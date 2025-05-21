@@ -1,6 +1,8 @@
 black
 discord.py
 httpx
+mkdocstrings[python]
+mkdocs-material
 mypy
 openai>=1.0.0
 pre-commit

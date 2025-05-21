@@ -1,0 +1,21 @@
+site_name: Discord LM Bot
+site_description: "Documentation for the ChatGPT Discord bot project"
+site_author: flimedime0
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+repo_url: https://github.com/flimedime0/discord-lm-app
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            docstring_style: google
+markdown_extensions:
+  - admonition
+  - pymdownx.highlight
+  - pymdownx.superfences
