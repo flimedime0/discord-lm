@@ -1,29 +1,36 @@
-# Changelog
+# CHANGELOG
 
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## v0.0.1 (2025-05-21)
 
-## [Unreleased]
-### Added
-- pre-commit hooks (Black, Ruff, EOF fixer)
-- Basic GitHub Actions CI (Black, Ruff, pytest).
-- CONTRIBUTING and project state docs.
-- Dockerfile & docker-compose for one-command run.
-- CI job that builds the image.
-- mypy static-type checking (CI + pre-commit).
-- Structured Rich logging and exponential-back-off retries for OpenAI & Google calls.
-- MkDocs documentation site (Material theme) and CI build.
-- Coverage reporting with pytest-cov + Codecov badge.
- - Automated dependency updates via Dependabot
- - Semantic-release workflow (auto version + GitHub Release notes)
-### Fixed
-- URLs are no longer split across message boundaries.
-- OpenAI client initialised lazily; CI no longer needs an API key.
-- CI passes when no tests are collected.
-- Release workflow now fetches full git history (semantic-release works).
+### Bug Fixes
 
-## [0.1.0] – 2025-05-20
-### Added
-- Initial bot with OpenAI chat, Google CSE search, URL-safe splitter, mention trigger.
+- Fetch full history for release
+  ([`8cd2633`](https://github.com/flimedime0/discord-lm-app/commit/8cd26334486b410c5f2a63e7a70b223720e48ff9))
+
+- Preserve URLs in slow send
+  ([`7edac89`](https://github.com/flimedime0/discord-lm-app/commit/7edac8908a902d4366bd78b286548694e5dd108c))
+
+### Chores
+
+- Add dependabot and release workflow
+  ([`b4fbdda`](https://github.com/flimedime0/discord-lm-app/commit/b4fbdda3cc866221f9e3f9ba6959a93e42739028))
+
+### Documentation
+
+- Add contribution and project state
+  ([`aeb426d`](https://github.com/flimedime0/discord-lm-app/commit/aeb426d61712368ed82c1b1360b947798f23b589))
+
+- Clarify web search usage
+  ([`2f2eee1`](https://github.com/flimedime0/discord-lm-app/commit/2f2eee1d6bfdbb975d9b5f7575df2774fa2b361c))
+
+- Fix links for mkdocs strict
+  ([`c122b71`](https://github.com/flimedime0/discord-lm-app/commit/c122b71a999cf90fdd1bd4b80cd3519cf128ea23))
+
+- Note message content intent
+  ([`18405cb`](https://github.com/flimedime0/discord-lm-app/commit/18405cb7133101df62586a8c8875395ffe51ee7f))
+
+### Refactoring
+
+- Lazily init openai client
+  ([`da4aa5e`](https://github.com/flimedime0/discord-lm-app/commit/da4aa5eaf6709076b1aaf8187bb5aec329a36ba5))
