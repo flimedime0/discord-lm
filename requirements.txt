@@ -1,7 +1,10 @@
-openai>=1.0.0
-discord.py
-python-dotenv
-httpx
+aiohttp
 black
-ruff
+discord.py
+httpx
+openai>=1.0.0
 pre-commit
+pytest
+pytest-asyncio
+python-dotenv
+ruff

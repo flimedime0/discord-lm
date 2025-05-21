@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Basic GitHub Actions CI (Black, Ruff, pytest).
 ### Fixed
 - URLs are no longer split across message boundaries.
+- CI passes with splitter tests
 
 ## [0.1.0] – 2025-05-20
 ### Added
