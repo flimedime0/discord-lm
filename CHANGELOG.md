@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - pre-commit hooks (Black, Ruff, EOF fixer)
 - Basic GitHub Actions CI (Black, Ruff, pytest).
+- CONTRIBUTING and project state docs.
 ### Fixed
 - URLs are no longer split across message boundaries.
 - OpenAI client initialised lazily; CI no longer needs an API key.
