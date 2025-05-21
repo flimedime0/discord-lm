@@ -1,9 +1,13 @@
 # CHANGELOG
 
-## Unreleased
 
-### Added
-- Automatic roadmap sync from GitHub Issues.
+## v0.1.0 (2025-05-21)
+
+### Features
+
+- Add roadmap sync
+  ([`0b2f374`](https://github.com/flimedime0/discord-lm-app/commit/0b2f374445217961609cd7eee674d401278652ab))
+
 
 ## v0.0.1 (2025-05-21)
 
