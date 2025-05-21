@@ -5,6 +5,7 @@
 ![Black](https://img.shields.io/badge/code%20style-black-000000)
 ![CI](https://github.com/<USER>/discord-lm-app/actions/workflows/ci.yml/badge.svg)
 ![Docs](https://img.shields.io/badge/docs-site-blue)
+![Coverage](https://codecov.io/gh/flimedime0/discord-lm-app/branch/main/graph/badge.svg)
 
 **• [CONTRIBUTING](CONTRIBUTING.md)** – dev setup & workflow  
 **• [Project state](PROJECT_STATE.md)** – architecture & roadmap
