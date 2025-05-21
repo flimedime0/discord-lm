@@ -6,6 +6,7 @@ from openai import AsyncOpenAI
 
 @cache
 def client_oai() -> AsyncOpenAI:
+    # dummy key ⇒ no network access during tests
     return AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY", "dummy"))
 
 
