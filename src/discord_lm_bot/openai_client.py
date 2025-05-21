@@ -1,8 +1,13 @@
+from functools import cache
+import os
+
 from openai import AsyncOpenAI
 
-from .config import OPENAI_API_KEY
 
-client_oai = AsyncOpenAI(api_key=OPENAI_API_KEY)
+@cache
+def client_oai() -> AsyncOpenAI:
+    return AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY", "dummy"))
+
 
 DEFAULT_O3_PARAMS = {
     "temperature": 1,
@@ -18,3 +23,5 @@ SYSTEM_CITE = (
     "After answering, add a line 'Sources:' followed by every URL from "
     "web_search, one per line. Speak naturally."
 )
+
+__all__ = ["client_oai", "DEFAULT_O3_PARAMS", "SYSTEM_CITE"]
