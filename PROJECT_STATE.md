@@ -12,13 +12,13 @@
 - fix-ci-openai-24
 - logging-retry-15
 - docs-mkdocs-17
+- dependabot-release-16
 
 ## Backlog
 | ID | Scope | Status |
 | dockerize-13 | Dockerfile & compose | next |
 | mypy-baseline-14 | add type hints & mypy | queued |
 | coverage-18 | pytest-cov, badge | queued |
-| dependabot-release-16 | weekly bumps, semantic-release | queued |
 
 ## Key decisions
 - why lazy OpenAI client with dummy key

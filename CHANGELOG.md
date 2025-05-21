@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structured Rich logging and exponential-back-off retries for OpenAI & Google calls.
 - MkDocs documentation site (Material theme) and CI build.
 - Coverage reporting with pytest-cov + Codecov badge.
+ - Automated dependency updates via Dependabot
+ - Semantic-release workflow (auto version + GitHub Release notes)
 ### Fixed
 - URLs are no longer split across message boundaries.
 - OpenAI client initialised lazily; CI no longer needs an API key.
