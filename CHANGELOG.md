@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - URLs are no longer split across message boundaries.
 - OpenAI client initialised lazily; CI no longer needs an API key.
 - CI passes when no tests are collected.
+- Release workflow now fetches full git history (semantic-release works).
 
 ## [0.1.0] – 2025-05-20
 ### Added
