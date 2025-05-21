@@ -69,7 +69,7 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
     params = {k: v for k, v in merged.items() if v is not None}
 
     # 1st request – let the model decide if it needs search unless forced
-    r1 = await client_oai.chat.completions.create(
+    r1 = await client_oai().chat.completions.create(
         model=model,
         messages=[{"role": "user", "content": prompt}],
         tools=[SEARCH_TOOL],
@@ -104,7 +104,7 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
             ]
         )
 
-        r2 = await client_oai.chat.completions.create(
+        r2 = await client_oai().chat.completions.create(
             model=model,
             messages=history,
             **params,
