@@ -2,6 +2,7 @@ from functools import cache
 import os
 
 from openai import AsyncOpenAI
+from tenacity import retry, stop_after_attempt, wait_exponential_jitter
 
 
 @cache
@@ -25,4 +26,22 @@ SYSTEM_CITE = (
     "web_search, one per line. Speak naturally."
 )
 
-__all__ = ["client_oai", "DEFAULT_O3_PARAMS", "SYSTEM_CITE"]
+retry_oai = retry(
+    wait=wait_exponential_jitter(initial=1, max=10),
+    stop=stop_after_attempt(5),
+    reraise=True,
+)
+
+
+@retry_oai
+async def call_chat(**kwargs):
+    return await client_oai().chat.completions.create(**kwargs)
+
+
+__all__ = [
+    "client_oai",
+    "DEFAULT_O3_PARAMS",
+    "SYSTEM_CITE",
+    "retry_oai",
+    "call_chat",
+]

@@ -3,6 +3,8 @@ import os
 
 import httpx
 
+from .openai_client import retry_oai
+
 SEARCH_TOOL = {
     "type": "function",
     "function": {
@@ -41,9 +43,14 @@ async def do_search(query: str, num_results: int = 8) -> str:
         "q": query,
         "num": num_results,
     }
-    async with httpx.AsyncClient() as client:
-        r = await client.get(url, params=params, timeout=10)
-        data = r.json()
+
+    @retry_oai
+    async def _fetch() -> dict:
+        async with httpx.AsyncClient() as client:
+            r = await client.get(url, params=params, timeout=10)
+            return r.json()
+
+    data = await _fetch()
 
     items = data.get("items", [])
     results = [{"title": it["title"], "url": it["link"], "snippet": it["snippet"]} for it in items]

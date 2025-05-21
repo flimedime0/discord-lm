@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dockerfile & docker-compose for one-command run.
 - CI job that builds the image.
 - mypy static-type checking (CI + pre-commit).
+- Structured Rich logging and exponential-back-off retries for OpenAI & Google calls.
 ### Fixed
 - URLs are no longer split across message boundaries.
 - OpenAI client initialised lazily; CI no longer needs an API key.

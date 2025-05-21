@@ -5,7 +5,7 @@ import re
 import discord
 
 from .config import DISCORD_TOKEN, OPENAI_API_KEY
-from .openai_client import client_oai, DEFAULT_O3_PARAMS, SYSTEM_CITE
+from .openai_client import call_chat, DEFAULT_O3_PARAMS, SYSTEM_CITE
 from .search_tool import SEARCH_TOOL, do_search
 
 URL_RE = re.compile(r"https?://\S+")
@@ -69,7 +69,7 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
     params = {k: v for k, v in merged.items() if v is not None}
 
     # 1st request – let the model decide if it needs search unless forced
-    r1 = await client_oai().chat.completions.create(  # type: ignore[call-overload]
+    r1 = await call_chat(
         model=model,
         messages=[{"role": "user", "content": prompt}],
         tools=[SEARCH_TOOL],
@@ -104,7 +104,7 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
             ]
         )
 
-        r2 = await client_oai().chat.completions.create(  # type: ignore[call-overload]
+        r2 = await call_chat(
             model=model,
             messages=history,
             **params,
