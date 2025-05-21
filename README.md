@@ -26,6 +26,13 @@ This repository contains a simple Discord bot that connects to the OpenAI ChatGP
    ```
 6. Set `GOOGLE_API_KEY` and `GOOGLE_CSE_ID` in `.env` for web search.
 
+### Quick start with Docker
+
+```bash
+docker compose up --build -d        # first run
+docker compose logs -f bot          # view logs
+```
+
 ## Package Layout
 
 The bot code resides in `src/discord_lm_bot/`. Run the bot via `discord_lm_bot.run_bot`

@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  bot:
+    build: .
+    env_file:
+      - .env               # same as local dev
+    restart: always
+    # comment out if running interactively
+    # logging:
+    #   driver: "json-file"
+    #   options:
+    #     max-size: "10m"
+    #     max-file: "3"
