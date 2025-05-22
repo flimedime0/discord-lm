@@ -1,6 +1,12 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Documentation
+
+- Wrap README badges in links.
+
 ## v0.3.0 (2025-05-22)
 
 ### Documentation

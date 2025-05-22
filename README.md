@@ -1,12 +1,12 @@
 # Discord ChatGPT Bot
 
-![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
-![License](https://img.shields.io/badge/license-MIT-green)
-![Black](https://img.shields.io/badge/code%20style-black-000000)
-![CI](https://github.com/flimedime0/discord-lm-app/actions/workflows/ci.yml/badge.svg)
-![Docs](https://img.shields.io/badge/docs-site-blue)
-![Coverage](https://codecov.io/gh/flimedime0/discord-lm-app/branch/main/graph/badge.svg)
-![Release](https://img.shields.io/github/v/release/flimedime0/discord-lm-app)
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue)](https://github.com/flimedime0/discord-lm-app)
+[![License](https://img.shields.io/badge/license-MIT-green)](https://github.com/flimedime0/discord-lm-app/blob/main/LICENSE)
+[![Black](https://img.shields.io/badge/code%20style-black-000000)](https://github.com/psf/black)
+[![CI](https://github.com/flimedime0/discord-lm-app/actions/workflows/ci.yml/badge.svg)](https://github.com/flimedime0/discord-lm-app/actions/workflows/ci.yml)
+[![Docs](https://img.shields.io/badge/docs-site-blue)](https://flimedime0.github.io/discord-lm-app/)
+[![Coverage](https://codecov.io/gh/flimedime0/discord-lm-app/branch/main/graph/badge.svg)](https://codecov.io/gh/flimedime0/discord-lm-app)
+[![Release](https://img.shields.io/github/v/release/flimedime0/discord-lm-app)](https://github.com/flimedime0/discord-lm-app/releases)
 
 **• [CONTRIBUTING](CONTRIBUTING.md)** – dev setup & workflow  
 **• [Project state](PROJECT_STATE.md)** – architecture & roadmap
