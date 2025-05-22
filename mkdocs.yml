@@ -10,6 +10,7 @@ theme:
 repo_url: https://github.com/flimedime0/discord-lm-app
 plugins:
   - search
+  - linkcheck
   - mkdocstrings:
       handlers:
         python:

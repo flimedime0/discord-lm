@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+- Correct link-checker package name (CI green again)
 
 ## v0.1.0 (2025-05-21)
 

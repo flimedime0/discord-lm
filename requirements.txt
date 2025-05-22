@@ -2,6 +2,7 @@ black
 discord.py
 httpx
 mkdocstrings[python]
+mkdocs-linkcheck
 mkdocs-material
 mypy
 openai>=1.0.0
