@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+
+- Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
 
 ## v0.3.2 (2025-05-22)
 

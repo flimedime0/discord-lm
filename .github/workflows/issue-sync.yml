@@ -22,12 +22,12 @@ jobs:
         shell: bash
         run: |
           ID=$(python - <<'PY'
-import os, re, sys
-title = os.getenv("PR_TITLE", "")
-m = re.search(r'([a-z0-9\-]+-\d+)', title, re.I)
-if m:
-    print(m.group(1))
-PY
+            import os, re, sys
+            title = os.getenv("PR_TITLE", "")
+            m = re.search(r'([a-z0-9\-]+-\d+)', title, re.I)
+            if m:
+                print(m.group(1))
+          PY
           )
           echo "id=$ID" >>"$GITHUB_OUTPUT"
 
