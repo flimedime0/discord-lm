@@ -1,9 +1,12 @@
 # CHANGELOG
 
-## Unreleased
 
-### Fixed
-- Fix YAML indentation & duplicate-file problem in issue-sync workflow.
+## v0.3.2 (2025-05-22)
+
+### Bug Fixes
+
+- **ci**: Repair issue-sync workflow
+  ([`b77d13f`](https://github.com/flimedime0/discord-lm-app/commit/b77d13fc66b7739502a9f0cac5b87dcd0120dc7c))
 
 
 ## v0.3.1 (2025-05-22)
