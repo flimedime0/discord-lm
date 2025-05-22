@@ -1,37 +1,44 @@
 name: Issue Sync
-
 on:
   pull_request:
     types: [closed]
+
+permissions:
+  contents: read
+  issues: write
 
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - name: Extract Task ID
-        id: task
+        id: id
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
           ID=$(python - <<'PY'
-import os, re
-title = os.environ['PR_TITLE']
-m = re.search(r"(?P<id>[a-z0-9-]+-[0-9]+)", title)
+import os, re, sys
+m = re.search(r'([a-z0-9\-]+-\d+)', os.getenv("PR_TITLE", ""), re.I)
 if m:
-    print(m.group('id'))
+    print(m.group(1))
 PY
           )
-          echo "id=$ID" >> "$GITHUB_OUTPUT"
-      - name: Ensure issue exists
-        if: steps.task.outputs.id
-        run: |
-          ISSUE=$(python tools/ensure_task_issue.py "${{ steps.task.outputs.id }}")
-          echo "issue=$ISSUE" >> $GITHUB_OUTPUT
-      - name: Label and comment
-        if: steps.task.outputs.id
+          echo "id=$ID" >>"$GITHUB_OUTPUT"
+
+      - name: Ensure issue exists (create if missing)
+        if: ${{ steps.id.outputs.id != '' }}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh api repos/${{ github.repository }}/issues/${{ steps.task.outputs.issue }}/labels -X PUT -f labels='["Task-ID","status:done"]'
-          gh api repos/${{ github.repository }}/issues/${{ steps.task.outputs.issue }}/comments -f body="Closed by ${{ github.event.pull_request.html_url }}"
+          ISSUE=$(python tools/ensure_task_issue.py "${{ steps.id.outputs.id }}")
+          echo "issue=$ISSUE" >>"$GITHUB_OUTPUT"
+
+      - name: Label and comment
+        if: ${{ steps.id.outputs.id != '' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          gh issue edit "$ISSUE" --add-label "Task-ID,status:done"
+          gh issue comment "$ISSUE" --body "Closed by ${{ github.event.pull_request.html_url }}"

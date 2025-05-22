@@ -1,0 +1,13 @@
+Metadata-Version: 2.4
+Name: discord-lm-app
+Version: 0.0.0
+Requires-Dist: discord.py
+Requires-Dist: openai
+Requires-Dist: httpx
+Requires-Dist: python-dotenv
+Requires-Dist: tenacity
+Requires-Dist: rich
+Provides-Extra: dev
+Requires-Dist: pytest; extra == "dev"
+Requires-Dist: pytest-asyncio; extra == "dev"
+Requires-Dist: pytest-mock; extra == "dev"

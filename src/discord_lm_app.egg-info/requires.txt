@@ -1,0 +1,11 @@
+discord.py
+openai
+httpx
+python-dotenv
+tenacity
+rich
+
+[dev]
+pytest
+pytest-asyncio
+pytest-mock

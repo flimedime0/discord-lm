@@ -7,6 +7,10 @@
 
 - Wrap README badges in links.
 
+### Fixed
+
+- Fix issue-sync.yml YAML so the workflow runs
+
 ## v0.3.0 (2025-05-22)
 
 ### Documentation
