@@ -7,6 +7,10 @@
 
 - Wrap README badges in links.
 
+### Continuous Integration
+
+- Use built-in GITHUB_TOKEN in issue-sync
+
 ## v0.3.0 (2025-05-22)
 
 ### Documentation
