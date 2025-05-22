@@ -15,3 +15,12 @@
 
 ## Releasing
 - Releases are fully automated via `python-semantic-release` triggered by merges to `main`. Ensure your commit messages follow Conventional Commits style (e.g., `feat: ...`, `fix: ...`, `chore: ...`) to generate accurate changelogs and version bumps.
+
+## Bootstrapping Historical Issues
+Run `gh auth login` to authenticate, then execute:
+
+```bash
+python tools/create_historical_issues.py
+```
+
+This scans `CHANGELOG.md` for completed tasks and creates GitHub issues for them once.

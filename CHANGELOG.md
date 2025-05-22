@@ -7,6 +7,9 @@
 - Added src/discord_lm_bot.egg-info/ to .gitignore.
 - Added core dependencies to pyproject.toml.
 
+### Added
+- Script `tools/create_historical_issues.py` to bootstrap roadmap from past changelog entries.
+
 
 ## v0.1.1 (2025-05-22)
 
