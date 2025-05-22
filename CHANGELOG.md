@@ -1,25 +1,31 @@
 # CHANGELOG
 
 
-## Unreleased
+## v0.1.1 (2025-05-22)
 
-### Added
+### Bug Fixes
 
-- Coverage guard (CI fails if total coverage –1 % or more)
-- GHCR push: each release publishes a Docker image
+- **release**: Push images
+  ([`a8569b8`](https://github.com/flimedime0/discord-lm-app/commit/a8569b8ebaa61ebab2de648312af85160716ba61))
 
 ### Chores
 
-- De-duplicate `mkdocstrings[python]` and sort `requirements.txt`.
+- Tidy requirements
+  ([`9dfe7d3`](https://github.com/flimedime0/discord-lm-app/commit/9dfe7d35039daf9014932f7d0eb2ed390a88dbde))
+
+### Continuous Integration
+
+- Install linkcheck for docs
+  ([`a7c716c`](https://github.com/flimedime0/discord-lm-app/commit/a7c716cf2309cff9e6f05145e963d5e1c6f05a18))
 
 ### Documentation
 
-- Fix CI badge URL.
+- Document release docker push and coverage guard
+  ([`55299ff`](https://github.com/flimedime0/discord-lm-app/commit/55299fff07da7fd2f5424cbd884068382acdc8b0))
 
-### Fixed
+- Fix CI badge URL
+  ([`f8e06f5`](https://github.com/flimedime0/discord-lm-app/commit/f8e06f5de13f30c3a44aa0a92029d7b8b76d6e98))
 
-- Docs CI: install mkdocs-linkcheck plugin (build green)
-- Release workflow: GHCR push now succeeds (packages permission)
 
 ## v0.1.0 (2025-05-21)
 
