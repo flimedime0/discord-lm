@@ -15,3 +15,8 @@
 
 ## Releasing
 - bump CHANGELOG, tag once CI passes (semantic-release TBD)
+
+## Bootstrapping Historical Issues
+This project uses GitHub Issues to track tasks, which then auto-populates PROJECT_STATE.md.
+To create issues for work completed before this system was in place, run the `tools/create_historical_issues.py` script once from your Codespace terminal.
+Ensure you are authenticated with the gh CLI (`gh auth login`) and have write permissions for issues on this repository.

@@ -1,4 +1,10 @@
 # CHANGELOG
+## [Unreleased]
+
+## [0.1.1] - 2025-05-22
+### Added
+- Script tools/create_historical_issues.py to bootstrap roadmap from past changelog entries.
+
 
 
 ## v0.1.1 (2025-05-22)
