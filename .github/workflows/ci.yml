@@ -57,5 +57,7 @@ jobs:
           python-version: '3.11'
       - name: Install mkdocs
         run: python -m pip install mkdocs-material mkdocstrings[python]
+      - name: Install link-checker plugin
+        run: python -m pip install mkdocs-link-check
       - name: Build docs
         run: mkdocs build --strict

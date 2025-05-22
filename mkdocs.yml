@@ -15,6 +15,7 @@ plugins:
         python:
           options:
             docstring_style: google
+  - link-check
 markdown_extensions:
   - admonition
   - pymdownx.highlight

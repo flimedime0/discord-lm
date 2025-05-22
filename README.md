@@ -6,10 +6,12 @@
 ![CI](https://github.com/<USER>/discord-lm-app/actions/workflows/ci.yml/badge.svg)
 ![Docs](https://img.shields.io/badge/docs-site-blue)
 ![Coverage](https://codecov.io/gh/flimedime0/discord-lm-app/branch/main/graph/badge.svg)
+![Image](https://img.shields.io/badge/docker-image-blue)
 ![Release](https://img.shields.io/github/v/release/flimedime0/discord-lm-app)
 
-**• [CONTRIBUTING](CONTRIBUTING.md)** – dev setup & workflow  
+**• [CONTRIBUTING](CONTRIBUTING.md)** – dev setup & workflow
 **• [Project state](PROJECT_STATE.md)** – architecture & roadmap
+*How the automation works →* `docs/automation.md`
 
 This repository contains a simple Discord bot that connects to the OpenAI ChatGPT API. When a user @-mentions the bot, e.g. `@YourBot what is 2+2?`, the bot forwards the prompt to ChatGPT and replies with the response. The bot replies whenever it's mentioned in a message.
 Full documentation → <https://flimedime0.github.io/discord-lm-app/>

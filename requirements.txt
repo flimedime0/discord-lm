@@ -1,14 +1,15 @@
 black
 discord.py
 httpx
-mkdocstrings[python]
+mkdocs-link-check
 mkdocs-material
+mkdocstrings[python]
 mypy
 openai>=1.0.0
 pre-commit
 pytest
-pytest-cov
 pytest-asyncio
+pytest-cov
 python-dotenv
 rich
 ruff

@@ -1,0 +1,29 @@
+name: Issue sync
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  ensure-issue:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Ensure Task-ID issue exists & marked done
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TITLE=$(jq -r '.pull_request.title' "$GITHUB_EVENT_PATH")
+          # Expect titles like "dockerize-13: …"
+          ID=${TITLE%%:*}
+          [[ "$ID" == *"-"* ]] || exit 0   # skip if no Task-ID
+          # search for an existing issue
+          ISSUE=$(gh issue list -S "$ID in:title state:open" --json number -q '.[0].number' || true)
+          if [[ -z "$ISSUE" ]]; then
+            gh issue create -t "$ID" -b "Auto-created for completed PR ${{ github.event.pull_request.html_url }}" --label "Task-ID,status:done"
+          else
+            gh issue edit "$ISSUE" --add-label "status:done"
+          fi

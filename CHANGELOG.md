@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## Unreleased
+
+### Added
+- MkDocs link-checker (CI fails on broken links)
+- Coverage guard (max –1 % drop)
+- Docker image pushed to GHCR on each release tag
+- Auto-creates / updates Task-ID Issues on PR merge
+- “Automation pipeline” docs page
+
 
 ## v0.1.0 (2025-05-21)
 
