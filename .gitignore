@@ -5,3 +5,5 @@ __pycache__/
 src/discord_lm_bot.egg-info/
 /.coverage
 /htmlcov/
+
+src/discord_lm_app.egg-info/
