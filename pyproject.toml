@@ -13,6 +13,13 @@ dependencies = [
     "rich",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-mock",
+]
+
 [tool.ruff]
 line-length = 100
 fix = true

@@ -11,3 +11,15 @@ def test_split_message_no_url_split():
 def test_split_message_no_blank_segment():
     text = "a" * 1999 + " "
     assert split_message(text) == ["a" * 1999]
+
+
+def test_split_message_unicode_and_urls():
+    text = "🙂" * 1000 + " https://example.com/foo" + " bar"
+    parts = split_message(text, max_len=1005)
+    assert parts == ["🙂" * 1000, "https://example.com/foo bar"]
+
+
+def test_split_message_no_break_space():
+    nbsp = "a" * 1000 + "\xa0" + "b" * 1000
+    parts = split_message(nbsp, max_len=1000)
+    assert parts == ["a" * 1000, "b" * 1000]

@@ -3,3 +3,5 @@ __pycache__/
 .venv/
 .pytest_cache/
 src/discord_lm_bot.egg-info/
+/.coverage
+/htmlcov/

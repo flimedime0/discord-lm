@@ -8,6 +8,12 @@
 - Added src/discord_lm_bot.egg-info/ to .gitignore.
 - Added core runtime dependencies to pyproject.toml.
 
+### Added
+- Automated Issue ⇄ PR sync via `issue-sync.yml`.
+- Initial full test suite; raise coverage guard to 0.5 %.
+- CI caches pip and enforces minimum coverage.
+- PR template & CODEOWNERS for smoother reviews.
+
 
 ## v0.2.0 (2025-05-22)
 
