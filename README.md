@@ -3,7 +3,7 @@
 ![Python 3.11](https://img.shields.io/badge/python-3.11-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Black](https://img.shields.io/badge/code%20style-black-000000)
-![CI](https://github.com/<USER>/discord-lm-app/actions/workflows/ci.yml/badge.svg)
+![CI](https://github.com/flimedime0/discord-lm-app/actions/workflows/ci.yml/badge.svg)
 ![Docs](https://img.shields.io/badge/docs-site-blue)
 ![Coverage](https://codecov.io/gh/flimedime0/discord-lm-app/branch/main/graph/badge.svg)
 ![Release](https://img.shields.io/github/v/release/flimedime0/discord-lm-app)
