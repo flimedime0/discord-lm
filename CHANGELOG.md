@@ -19,6 +19,7 @@
 ### Fixed
 
 - Docs CI: install mkdocs-linkcheck plugin (build green)
+- Release workflow: GHCR push now succeeds (packages permission)
 
 ## v0.1.0 (2025-05-21)
 
