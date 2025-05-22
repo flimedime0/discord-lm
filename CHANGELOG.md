@@ -1,20 +1,23 @@
 # CHANGELOG
 
 
-## Unreleased
+## v0.3.1 (2025-05-22)
 
-### Documentation
+### Bug Fixes
 
-- Wrap README badges in links.
+- Clean issue-sync workflow and ignore egg-info
+  ([`13d57b7`](https://github.com/flimedime0/discord-lm-app/commit/13d57b73950626b026693b8ef790a6c079b31255))
 
 ### Continuous Integration
 
-- Use built-in GITHUB_TOKEN in issue-sync
-- Repair issue-sync workflow (remove conflicts, use GITHUB_TOKEN).
+- Use built-in token for issue sync
+  ([`fb13d94`](https://github.com/flimedime0/discord-lm-app/commit/fb13d941141b288c0690d491fd035ea97f168fb3))
 
-### Chores
+### Documentation
 
-- Remove accidentally committed egg-info directory.
+- Wrap badges with links
+  ([`688338e`](https://github.com/flimedime0/discord-lm-app/commit/688338e6a52a7b194044701e31f63e363be4dfbb))
+
 
 ## v0.3.0 (2025-05-22)
 
