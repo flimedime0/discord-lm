@@ -1,6 +1,18 @@
 [tool.black]
 line-length = 100
 
+[project]
+name = "discord-lm-app"
+version = "0.1.1"
+dependencies = [
+    "discord.py",
+    "openai",
+    "httpx",
+    "python-dotenv",
+    "tenacity",
+    "rich",
+]
+
 [tool.ruff]
 line-length = 100
 fix = true

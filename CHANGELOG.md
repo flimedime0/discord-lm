@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## Unreleased
+
+### Documentation
+- Synchronized PROJECT_STATE.md, CONTRIBUTING.md, docs/automation.md, and README.md with current automation status.
+- Added src/discord_lm_bot.egg-info/ to .gitignore.
+- Added core dependencies to pyproject.toml.
+
 
 ## v0.1.1 (2025-05-22)
 
