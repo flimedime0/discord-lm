@@ -1,14 +1,27 @@
 # CHANGELOG
 
-## Unreleased
+
+## v0.2.0 (2025-05-22)
+
+### Chores
+
+- Sync automation docs and config
+  ([`27fa049`](https://github.com/flimedime0/discord-lm-app/commit/27fa0490824d3609fd3e0f1e5d3b7c50576425b3))
+
+### Continuous Integration
+
+- Sync roadmap [skip ci]
+  ([`8d15857`](https://github.com/flimedime0/discord-lm-app/commit/8d158577b6dcf6e04c9d2f03afc7209803abf1fb))
 
 ### Documentation
-- Synchronized PROJECT_STATE.md, CONTRIBUTING.md, docs/automation.md, and README.md with current automation status.
-- Added src/discord_lm_bot.egg-info/ to .gitignore.
-- Added core dependencies to pyproject.toml.
 
-### Added
-- Script `tools/create_historical_issues.py` to bootstrap roadmap from past changelog entries.
+- Note docs-build indentation fix
+  ([`284f9d2`](https://github.com/flimedime0/discord-lm-app/commit/284f9d28cc2a5cfd0b6a6b10086c7c19db6d42fa))
+
+### Features
+
+- Add script to create historical issues
+  ([`afcab0d`](https://github.com/flimedime0/discord-lm-app/commit/afcab0dd705d94a72fbbde56f17ae1528aa20ff8))
 
 
 ## v0.1.1 (2025-05-22)
@@ -24,9 +37,6 @@
   ([`9dfe7d3`](https://github.com/flimedime0/discord-lm-app/commit/9dfe7d35039daf9014932f7d0eb2ed390a88dbde))
 
 ### Continuous Integration
-
-- Fix docs-build indentation
-  ([`84fa128`](https://github.com/flimedime0/discord-lm-app/commit/84fa128))
 
 - Install linkcheck for docs
   ([`a7c716c`](https://github.com/flimedime0/discord-lm-app/commit/a7c716cf2309cff9e6f05145e963d5e1c6f05a18))
