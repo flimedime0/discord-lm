@@ -1,3 +1,4 @@
+# File purpose: Script to update project state data.
 #!/usr/bin/env python
 """
 Rebuild PROJECT_STATE.md from GitHub Issues.

@@ -1,1 +1,2 @@
+# File purpose: Top level package names.
 discord_lm_bot

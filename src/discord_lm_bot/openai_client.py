@@ -1,3 +1,4 @@
+# File purpose: Wrapper for OpenAI API calls.
 from functools import cache
 import os
 

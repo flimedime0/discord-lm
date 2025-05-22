@@ -1,3 +1,4 @@
+# File purpose: Utility for splitting long texts.
 from __future__ import annotations
 
 import re

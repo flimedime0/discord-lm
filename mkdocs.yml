@@ -1,3 +1,4 @@
+# File purpose: MkDocs site configuration.
 site_name: Discord LM Bot
 site_description: "Documentation for the ChatGPT Discord bot project"
 site_author: flimedime0

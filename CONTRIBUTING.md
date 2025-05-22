@@ -1,3 +1,4 @@
+<!-- File purpose: Guidelines for contributing. -->
 ## Quick start
 - clone, `python -m pip install -r requirements.txt`, `pip install -e .`
 - `pre-commit install`

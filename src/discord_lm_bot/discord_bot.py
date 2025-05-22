@@ -1,3 +1,4 @@
+# File purpose: Main Discord bot implementation.
 import asyncio
 import json
 import re

@@ -1,3 +1,4 @@
+# File purpose: Logging setup utilities.
 from __future__ import annotations
 import logging
 from rich.logging import RichHandler

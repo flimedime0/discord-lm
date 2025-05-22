@@ -1,3 +1,4 @@
+# File purpose: Configuration of pre-commit hooks.
 repos:
   - repo: https://github.com/psf/black
     rev: 24.3.0

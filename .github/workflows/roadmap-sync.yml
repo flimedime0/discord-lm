@@ -1,3 +1,4 @@
+# File purpose: GitHub Actions workflow to sync the roadmap.
 name: Roadmap sync
 
 on:

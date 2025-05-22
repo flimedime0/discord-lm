@@ -1,3 +1,4 @@
+<!-- File purpose: Documentation for developing the project. -->
 # Development
 
 - Install pre-commit hooks with `pre-commit install`.

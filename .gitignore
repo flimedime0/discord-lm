@@ -1,3 +1,4 @@
+# File purpose: Patterns for Git to ignore.
 .env
 __pycache__/
 .venv/

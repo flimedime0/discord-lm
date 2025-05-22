@@ -1,3 +1,4 @@
+# File purpose: GitHub Actions workflow for CI.
 name: CI
 
 on: [push, pull_request]

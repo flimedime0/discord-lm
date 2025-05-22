@@ -1,3 +1,4 @@
+<!-- File purpose: Records of notable project changes. -->
 # CHANGELOG
 
 
@@ -5,6 +6,7 @@
 
 ### Chores
 
+- Add file header comments across repository.
 - De-duplicate `mkdocstrings[python]` and sort `requirements.txt`.
 
 ### Documentation

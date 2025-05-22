@@ -1,3 +1,4 @@
+# File purpose: List of package files for distribution.
 README.md
 pyproject.toml
 src/discord_lm_bot/__init__.py

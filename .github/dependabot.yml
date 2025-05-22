@@ -1,3 +1,4 @@
+# File purpose: Dependabot configuration for dependency updates.
 version: 2
 updates:
   - package-ecosystem: "pip"

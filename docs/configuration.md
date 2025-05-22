@@ -1,3 +1,4 @@
+<!-- File purpose: Documentation for configuration options. -->
 # Configuration
 
 Set the following variables in your `.env` file:

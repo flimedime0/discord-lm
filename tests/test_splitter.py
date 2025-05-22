@@ -1,3 +1,4 @@
+# File purpose: Tests for the splitter utility.
 from discord_lm_bot.splitter import split_message
 
 

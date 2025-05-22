@@ -1,3 +1,4 @@
+# File purpose: List of Python dependencies.
 black
 discord.py
 httpx

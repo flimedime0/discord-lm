@@ -1,3 +1,4 @@
+# File purpose: GitHub Actions workflow for releases.
 name: Release
 
 on:

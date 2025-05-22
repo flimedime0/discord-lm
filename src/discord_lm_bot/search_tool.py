@@ -1,3 +1,4 @@
+# File purpose: Tools for searching Discord messages.
 import json
 import os
 

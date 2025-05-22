@@ -1,3 +1,4 @@
+// File purpose: Configuration for the development container.
 {
   "name": "discord-lm-app",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",

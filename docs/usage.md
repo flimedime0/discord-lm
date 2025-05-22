@@ -1,3 +1,4 @@
+<!-- File purpose: Instructions on using the bot. -->
 # Usage
 
 ## Running with Python

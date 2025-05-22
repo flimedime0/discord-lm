@@ -1,3 +1,4 @@
+<!-- File purpose: Documentation homepage. -->
 # Discord LM Bot
 
 Welcome to the documentation for the ChatGPT Discord bot.

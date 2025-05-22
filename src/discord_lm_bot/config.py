@@ -1,3 +1,4 @@
+# File purpose: Configuration dataclass and loading.
 import os
 from dotenv import load_dotenv
 
