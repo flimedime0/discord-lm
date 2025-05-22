@@ -1,28 +1,27 @@
 # Automation Pipeline
 
-This project leverages GitHub Actions to automate most of the development lifecycle:
+This project uses several GitHub Actions workflows to keep everything in sync:
 
-*   **On every `git push` to any branch or `pull_request`**:
-    *   The CI workflow (`.github/workflows/ci.yml`) runs.
-    *   It installs dependencies (including an editable install of the bot package).
-    *   Lints code with Black and Ruff.
-    *   Type-checks with Mypy.
-    *   Runs unit tests with Pytest and uploads coverage to Codecov.
-    *   Builds the Docker image (but does not push it).
-    *   Builds the MkDocs documentation site (including an external link check).
-*   **On `pull_request` merged to `main`**:
-    *   The Release workflow (`.github/workflows/release.yml`) runs.
-    *   `python-semantic-release` determines the new version based on Conventional Commit messages.
-    *   `pyproject.toml` version is bumped.
-    *   `CHANGELOG.md` is updated.
-    *   A Git tag and GitHub Release are created.
-    *   The Docker image is built and pushed to `ghcr.io/flimedime0/discord-lm-app:<tag>`.
-    *   The Issue Sync workflow (`.github/workflows/issue-sync.yml`) runs to ensure any linked GitHub Issue (via PR title Task ID) is labeled `status:done`.
-*   **On GitHub `issues` events (opened, edited, labeled, closed, reopened)**:
-    *   The Roadmap Sync workflow (`.github/workflows/roadmap-sync.yml`) runs.
-    *   `tools/update_state.py` fetches all issues labeled `Task-ID`.
-    *   `PROJECT_STATE.md` is regenerated and committed back to the repository.
-*   **Weekly (via `.github/dependabot.yml`)**:
-    *   Dependabot checks for outdated Python dependencies and opens PRs to update them. These PRs go through the same CI checks.
+* **CI workflow** (`.github/workflows/ci.yml`)
+  * Runs on every push and pull request.
+  * Installs dependencies and performs an editable install of the bot.
+  * Formats and lints the code with **Black** and **Ruff**.
+  * Type-checks with **Mypy**.
+  * Executes unit tests with **Pytest** and uploads coverage to Codecov.
+  * Builds the Docker image (without pushing).
+  * Builds the documentation site and checks external links.
+* **Release workflow** (`.github/workflows/release.yml`)
+  * Triggers when a pull request is merged into `main`.
+  * Uses **python-semantic-release** to bump the version and update `CHANGELOG.md`.
+  * Creates a Git tag and GitHub release.
+  * Builds and pushes the Docker image to `ghcr.io`.
+  * Runs the Issue Sync workflow to mark related issues as `status:done`.
+* **Roadmap Sync** (`.github/workflows/roadmap-sync.yml`)
+  * Runs on issue events such as opened, edited or closed.
+  * Calls `tools/update_state.py` to regenerate `PROJECT_STATE.md`.
+* **Issue Sync** (`.github/workflows/issue-sync.yml`)
+  * Updates issue labels after releases to ensure the roadmap reflects completed work.
+* **Dependabot** (configured via `.github/dependabot.yml`)
+  * Weekly checks for outdated dependencies and opens pull requests which go through the same CI checks.
 
-This setup ensures that `main` is always in a releasable state, documentation is current, and project status is transparent.
+This automation keeps `main` always releasable and documentation fully up to date.

@@ -3,10 +3,10 @@
 ## Project road-map  *(auto-generated)*
 
 ### In Progress
-*(This section will be populated by issues with label "status:in-progress")*
+*(issues with label `status:in-progress`)*
 
 ### Todo
-*(This section will be populated by issues with label "status:todo")*
+*(issues with label `status:todo`)*
 
 ### Done
-*(This section will be populated by issues with label "status:done")*
+*(issues with label `status:done`)*
