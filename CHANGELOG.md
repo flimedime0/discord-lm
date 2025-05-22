@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+- Indent literal block in issue-sync.yml; workflow no longer crashes.
+
 
 ## v0.3.1 (2025-05-22)
 
