@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Added
+
+- Coverage guard (CI fails if total coverage –1 % or more)
+- GHCR push: each release publishes a Docker image
+
 ### Chores
 
 - De-duplicate `mkdocstrings[python]` and sort `requirements.txt`.
