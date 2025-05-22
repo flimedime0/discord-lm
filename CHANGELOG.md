@@ -11,6 +11,10 @@
 
 - Fix CI badge URL.
 
+### Fixed
+
+- Docs CI: install mkdocs-linkcheck plugin (build green)
+
 ## v0.1.0 (2025-05-21)
 
 ### Features
