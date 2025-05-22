@@ -1,18 +1,17 @@
 # CHANGELOG
 
 
-## Unreleased
+## v0.3.0 (2025-05-22)
 
 ### Documentation
-- Synchronised PROJECT_STATE.md, CONTRIBUTING.md, docs/automation.md and README.md with current automation status.
-- Added src/discord_lm_bot.egg-info/ to .gitignore.
-- Added core runtime dependencies to pyproject.toml.
 
-### Added
-- Automated Issue ⇄ PR sync via `issue-sync.yml`.
-- Initial full test suite; raise coverage guard to 0.5 %.
-- CI caches pip and enforces minimum coverage.
-- PR template & CODEOWNERS for smoother reviews.
+- Sync automation docs
+  ([`385cc87`](https://github.com/flimedime0/discord-lm-app/commit/385cc8770ca7a3a2fca3fd37aa9a898674b4f14e))
+
+### Features
+
+- Add CI and testing enhancements
+  ([`3073fb0`](https://github.com/flimedime0/discord-lm-app/commit/3073fb07955c65f0bf01a363dffecc02791bbf0e))
 
 
 ## v0.2.0 (2025-05-22)
