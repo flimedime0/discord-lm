@@ -10,6 +10,11 @@
 ### Continuous Integration
 
 - Use built-in GITHUB_TOKEN in issue-sync
+- Repair issue-sync workflow (remove conflicts, use GITHUB_TOKEN).
+
+### Chores
+
+- Remove accidentally committed egg-info directory.
 
 ## v0.3.0 (2025-05-22)
 
