@@ -3,7 +3,7 @@ line-length = 100
 
 [project]
 name = "discord-lm-app"
-version = "0.1.1"
+version = "0.0.0"  # semantic-release overwrites
 dependencies = [
     "discord.py",
     "openai",

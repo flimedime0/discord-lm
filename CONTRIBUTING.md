@@ -14,7 +14,7 @@
 - `python -m discord_lm_bot.discord_bot` (needs `DISCORD_TOKEN` env var)
 
 ## Releasing
-- Releases are fully automated via `python-semantic-release` triggered by merges to `main`. Ensure your commit messages follow Conventional Commits style (e.g., `feat: ...`, `fix: ...`, `chore: ...`) to generate accurate changelogs and version bumps.
+- Releases are fully automated via **python-semantic-release** on every merge to **main**. Use Conventional Commit messages (`feat: …`, `fix: …`, `chore: …`) so the changelog & version bump are generated correctly.
 
 ## Bootstrapping Historical Issues
 Run `gh auth login` to authenticate, then execute:
