@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## Unreleased
+
+### Fixed
+- Fix YAML indentation & duplicate-file problem in issue-sync workflow.
+
 
 ## v0.3.1 (2025-05-22)
 

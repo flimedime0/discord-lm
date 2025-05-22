@@ -14,30 +14,35 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 1 ▸ grab the Task ID out of the PR title
       - name: Extract Task ID from PR title
-        id: task
+        id: extract
         env:
           PR_TITLE: ${{ github.event.pull_request.title }}
+        shell: bash
         run: |
           ID=$(python - <<'PY'
-import os, re
-m = re.search(r'([a-z0-9\-]+-\d+)', os.getenv("PR_TITLE", ""), re.I)
+import os, re, sys
+title = os.getenv("PR_TITLE", "")
+m = re.search(r'([a-z0-9\-]+-\d+)', title, re.I)
 if m:
     print(m.group(1))
 PY
           )
           echo "id=$ID" >>"$GITHUB_OUTPUT"
 
-      - name: Ensure issue exists (create if missing)
-        if: ${{ steps.task.outputs.id != '' }}
+      # 2 ▸ ensure that issue exists (create if missing) and capture number
+      - name: Ensure issue exists
+        if: ${{ steps.extract.outputs.id != '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          ISSUE=$(python tools/ensure_task_issue.py "${{ steps.task.outputs.id }}")
-          echo "ISSUE=$ISSUE" >>"$GITHUB_OUTPUT"
+          ISSUE=$(python tools/ensure_task_issue.py "${{ steps.extract.outputs.id }}")
+          echo "issue=$ISSUE" >>"$GITHUB_OUTPUT"
 
+      # 3 ▸ label & comment on the issue
       - name: Label and comment
-        if: ${{ steps.task.outputs.id != '' }}
+        if: ${{ steps.extract.outputs.id != '' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
