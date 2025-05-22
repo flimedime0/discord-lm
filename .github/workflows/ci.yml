@@ -55,10 +55,11 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-        - name: Install MkDocs deps
-          run: |
-            python -m pip install mkdocs-material \
-                               mkdocstrings[python] \
-                               mkdocs-linkcheck
+
+      - name: Install MkDocs deps
+        run: |
+          python -m pip install mkdocs-material \
+                             mkdocstrings[python] \
+                             mkdocs-linkcheck
       - name: Build docs
         run: mkdocs build --strict

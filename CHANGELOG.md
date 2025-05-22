@@ -15,6 +15,9 @@
 
 ### Continuous Integration
 
+- Fix docs-build indentation
+  ([`84fa128`](https://github.com/flimedime0/discord-lm-app/commit/84fa128))
+
 - Install linkcheck for docs
   ([`a7c716c`](https://github.com/flimedime0/discord-lm-app/commit/a7c716cf2309cff9e6f05145e963d5e1c6f05a18))
 
