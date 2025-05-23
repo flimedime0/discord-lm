@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [Unreleased]
+
+### Fixed
+- Correctly access label names in update_state.py to fix roadmap sync
 
 ## v0.3.6 (2025-05-23)
 

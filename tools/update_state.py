@@ -31,7 +31,11 @@ def fetch_issues():
 buckets: dict[str, list[str]] = {"in-progress": [], "todo": [], "done": []}
 for it in fetch_issues():
     status = next(
-        (label.split(":", 1)[1] for label in it["labels"] if label.startswith("status:")),
+        (
+            lbl_obj["name"].split(":", 1)[1]
+            for lbl_obj in it["labels"]
+            if lbl_obj["name"].startswith("status:")
+        ),
         "todo",
     )
     buckets[status].append(it["title"])
