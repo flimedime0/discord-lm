@@ -1,0 +1,23 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, ready_for_review]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title for Task ID
+        shell: bash
+        run: |
+          TITLE="${{ github.event.pull_request.title }}"
+          if grep -qE '([a-z0-9\-]+-\d+)' <<< "$TITLE"; then
+            echo "Found Task ID in title"
+          else
+            echo "Pull request title must contain a Task ID like my-feature-99" >&2
+            exit 1
+          fi

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Added
+
+- PR-title lint workflow prevents merges without a Task ID.
+
 ### Fixed
 
 - Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
