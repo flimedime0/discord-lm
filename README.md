@@ -100,3 +100,5 @@ content so blank `...` messages are avoided.
 
 This project uses [Black](https://github.com/psf/black) and
 [Ruff](https://github.com/astral-sh/ruff) for automatic formatting and linting.
+
+#love kiwi
