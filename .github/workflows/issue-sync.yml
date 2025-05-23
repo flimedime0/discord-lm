@@ -16,11 +16,22 @@ jobs:
 
       # 1 ▸ grab the Task ID out of the PR title
       - name: Extract Task ID from PR title
-        id: task
-        shell: bash
+        id: task # Keep this step id as 'task'
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        shell: bash # Explicitly use bash for potentially complex echo/grep
         run: |
-          ID=$(grep -oE '([a-z0-9\-]+-\d+)' <<< "${{ github.event.pull_request.title }}" || true)
-          echo "id=$ID" >>"$GITHUB_OUTPUT"
+          # Extracts 'task-id-123' from titles like "feat: blah (task-id-123)" or "fix(scope): blah [task-id-123]"
+          # Handles parentheses, brackets, or just the ID at the end.
+          TASK_ID_RAW=$(echo "$PR_TITLE" | grep -oE '([a-zA-Z0-9]+-[0-9]+)' || echo "")
+          echo "Extracted raw ID: $TASK_ID_RAW" # For debugging
+          # Further clean if needed, e.g. ensure it's not just a version number like 0.1.0
+          if [[ "$TASK_ID_RAW" =~ ^[a-zA-Z]+-[0-9]+(-[a-zA-Z0-9]+)*$ ]]; then
+            echo "id=$TASK_ID_RAW" >> "$GITHUB_OUTPUT"
+          else
+            echo "No valid Task ID found in title."
+            echo "id=" >> "$GITHUB_OUTPUT" # Ensure output is empty if no match
+          fi
 
       # 2 ▸ ensure that issue exists (create if missing) and capture number
       - name: Ensure issue exists
