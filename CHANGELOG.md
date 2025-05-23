@@ -2,10 +2,15 @@
 
 ## Unreleased
 
+### Added
+
+- Added one-shot `scripts/dev-bootstrap.sh` and dev-container hook.
+
 ### Fixed
 
 - Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
 - Remove indented here-doc in `issue-sync.yml`; workflow now runs without IndentationError.
+- Issue-Sync now authenticates with `GH_TOKEN`; requires Task ID in PR title.
 
 ## v0.3.2 (2025-05-22)
 

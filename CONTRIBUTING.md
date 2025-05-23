@@ -6,6 +6,7 @@
 - every change via Codex => paste instruction block, bring back diff pane
 - CI must be green before merge
 - every PR **must** include a Task ID and tests or a justification
+- **Add a Task ID** (`area-NN`) at the end of every PR title so Issue Sync can find or create the matching issue.
 
 ## Coding guidelines
 - Black line length 100, Ruff rules auto-fixed

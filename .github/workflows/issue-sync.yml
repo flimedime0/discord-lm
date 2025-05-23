@@ -26,6 +26,7 @@ jobs:
       - name: Ensure issue exists
         if: ${{ steps.task.outputs.id != '' }}
         env:
+          GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           ISSUE=$(python tools/ensure_task_issue.py "${{ steps.task.outputs.id }}")
@@ -35,6 +36,7 @@ jobs:
       - name: Label and comment
         if: ${{ steps.task.outputs.id != '' }}
         env:
+          GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           gh issue edit "$ISSUE" --add-label "Task-ID,status:done"

@@ -10,6 +10,7 @@ This project uses several GitHub Actions workflows to keep everything in sync:
   * Executes unit tests with **Pytest** and uploads coverage to Codecov.
   * Builds the Docker image (without pushing).
   * Builds the documentation site and checks external links.
+  * If a PR title contains a Task ID, the Issue Sync job automatically opens/labels the matching issue when the PR is merged.
 * **Release workflow** (`.github/workflows/release.yml`)
   * Triggers when a pull request is merged into `main`.
   * Uses **python-semantic-release** to bump the version and update `CHANGELOG.md`.
