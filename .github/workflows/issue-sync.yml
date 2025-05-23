@@ -34,7 +34,8 @@ jobs:
           fi
 
       # 2 ▸ ensure that issue exists (create if missing) and capture number
-      - name: Ensure issue exists
+      - name: Ensure issue exists (create if missing)
+        id: ensure_issue_step
         if: ${{ steps.task.outputs.id != '' }}
         env:
           GH_TOKEN: ${{ github.token }}     # make gh CLI auth work
@@ -50,5 +51,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}     # make gh CLI auth work
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          gh issue edit "$ISSUE" --add-label "Task-ID,status:done"
-          gh issue comment "$ISSUE" --body "Closed by ${{ github.event.pull_request.html_url }}"
+          gh issue edit "${{ steps.ensure_issue_step.outputs.issue }}" --add-label "Task-ID,status:done"
+          gh issue comment "${{ steps.ensure_issue_step.outputs.issue }}" --body "Closed by ${{ github.event.pull_request.html_url }}"

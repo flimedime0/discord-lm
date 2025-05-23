@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [Unreleased]
+
+### Fixed
+- Correctly reference step outputs in issue-sync.yml for labeling and commenting.
 
 ## v0.3.5 (2025-05-23)
 
