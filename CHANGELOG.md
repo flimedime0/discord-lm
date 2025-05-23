@@ -1,9 +1,13 @@
 # CHANGELOG
 
-## [Unreleased]
 
-### Fixed
-- Correctly access label names in update_state.py to fix roadmap sync
+## v0.3.7 (2025-05-23)
+
+### Bug Fixes
+
+- **tools**: Fix-roadmap-script-labels-83 - handle labels as objects
+  ([`d0d836d`](https://github.com/flimedime0/discord-lm-app/commit/d0d836da5af3dc7845428ff4bf43b7cbc039f313))
+
 
 ## v0.3.6 (2025-05-23)
 
