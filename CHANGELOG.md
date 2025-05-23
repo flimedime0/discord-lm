@@ -11,6 +11,7 @@
 - Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
 - Remove indented here-doc in `issue-sync.yml`; workflow now runs without IndentationError.
 - Issue-Sync now authenticates with the built-in GH_TOKEN secret.
+- Improve Task ID regex in issue-sync.yml for better reliability.
 
 ## v0.3.2 (2025-05-22)
 
