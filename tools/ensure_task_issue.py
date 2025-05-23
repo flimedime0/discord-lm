@@ -31,12 +31,19 @@ def run_gh_command(args: list[str], input_str: str | None = None) -> str:
 def ensure_task_issue(task_id: str) -> int:
     repo = os.environ["GITHUB_REPOSITORY"]
 
-    # Use 'gh search issues' for robust searching
-    search_query = f"{task_id} in:title repo:{repo} type:issue label:Task-ID"
+    # Pass search terms as individual arguments to 'gh search issues'
+    # This lets 'gh' handle any necessary quoting or escaping.
+    search_terms = [
+        task_id,  # The core search term (Task ID itself)
+        "in:title",
+        f"repo:{repo}",
+        "type:issue",
+        "label:Task-ID",
+    ]
     search_args = [
         "search",
         "issues",
-        search_query,
+        *search_terms,  # Unpack the terms as separate arguments
         "--json",
         "number",
         "--limit",
@@ -46,20 +53,27 @@ def ensure_task_issue(task_id: str) -> int:
     stdout = run_gh_command(search_args)
 
     try:
-        issues = json.loads(stdout)
-        if issues:  # If list is not empty, issue exists
-            print(f"Found existing issue for '{task_id}': #{issues[0]['number']}")
-            return issues[0]["number"]
+        # gh search issues returns a list of issues, even if --limit 1
+        # If no issues, it returns an empty list "[]"
+        issues_list = json.loads(stdout)
+        if issues_list:  # If list is not empty, issue exists
+            issue_number = issues_list[0]["number"]
+            print(f"Found existing issue for '{task_id}': #{issue_number}")
+            return issue_number
     except json.JSONDecodeError:
         print(
             f"Warning: Could not parse JSON from 'gh search issues': {stdout}",
             file=sys.stderr,
         )
         # Fall through to create if search parsing failed or returned empty
+    except IndexError:
+        print(
+            f"Warning: 'gh search issues' returned an empty list for {task_id}.",
+            file=sys.stderr,
+        )
 
     # If no issue found, create it
     print(f"No existing issue found for '{task_id}'. Creating new issue.")
-    # For creation, 'gh issue create' is fine
     create_args = [
         "issue",
         "create",
