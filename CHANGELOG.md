@@ -1,9 +1,12 @@
 # CHANGELOG
 
-## [Unreleased]
 
-### Fixed
-- Ensure ensure_task_issue.py only prints the issue number to stdout for workflow output capturing.
+## v0.3.5 (2025-05-23)
+
+### Bug Fixes
+
+- **tools**: Print informational messages to stderr
+  ([`596c24e`](https://github.com/flimedime0/discord-lm-app/commit/596c24e30f1cf2d0d26c79bf30c3618d4dd4c0bc))
 
 
 ## v0.3.4 (2025-05-23)
