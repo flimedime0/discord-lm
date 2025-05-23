@@ -1,9 +1,13 @@
 # CHANGELOG
 
-## [Unreleased]
 
-### Fixed
-- Correctly reference step outputs in issue-sync.yml for labeling and commenting.
+## v0.3.6 (2025-05-23)
+
+### Bug Fixes
+
+- **ci**: Correctly reference issue step outputs
+  ([`c202604`](https://github.com/flimedime0/discord-lm-app/commit/c2026041ae1bfb852eb4ad8d314a8fc3933c7604))
+
 
 ## v0.3.5 (2025-05-23)
 
