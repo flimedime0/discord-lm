@@ -1,9 +1,12 @@
 # CHANGELOG
 
-## [Unreleased]
 
-### Fixed
-- Refactor ensure_task_issue.py to pass individual search terms to gh search issues.
+## v0.3.4 (2025-05-23)
+
+### Bug Fixes
+
+- **tools**: Fix-ensure-issue-script-80 - refine issue search args
+  ([`8e957e6`](https://github.com/flimedime0/discord-lm-app/commit/8e957e6c9dda46afc25850e5deedbbfd7145a9fa))
 
 
 ## v0.3.3 (2025-05-23)
