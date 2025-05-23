@@ -1,18 +1,42 @@
 # CHANGELOG
 
-## Unreleased
 
-### Added
+## v0.3.3 (2025-05-23)
 
-- Added one-shot `scripts/dev-bootstrap.sh` and dev-container hook.
+### Bug Fixes
 
-### Fixed
+- **tools**: Fix-ensure-issue-script-79 - search issues via gh
+  ([`91ea1c7`](https://github.com/flimedime0/discord-lm-app/commit/91ea1c7e2ea8fc68175cc6c3f60c5e1b999003db))
 
-- Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
-- Remove indented here-doc in `issue-sync.yml`; workflow now runs without IndentationError.
-- Issue-Sync now authenticates with the built-in GH_TOKEN secret.
-- Improve Task ID regex in issue-sync.yml for better reliability.
-- Refactor ensure_task_issue.py to use gh search issues for improved reliability.
+### Chores
+
+- Remove egg-info build artifacts from tracking
+  ([`d1f251d`](https://github.com/flimedime0/discord-lm-app/commit/d1f251d1a44960ce6c057b12323e1af6c2aea164))
+
+### Continuous Integration
+
+- Fix issue-sync token usage
+  ([`cc1cafc`](https://github.com/flimedime0/discord-lm-app/commit/cc1cafc558ebc89758bf47b294fbbd3601da6d8c))
+
+- Fix issue-sync workflow indentation
+  ([`cc8e1bb`](https://github.com/flimedime0/discord-lm-app/commit/cc8e1bb104c4444f6b812d759ec20f735f497ef1))
+
+- Improve Task ID extraction
+  ([`d7c8613`](https://github.com/flimedime0/discord-lm-app/commit/d7c8613e82c7f8fae231c2b461dcbbd20a9b5169))
+
+- Remove python from issue-sync
+  ([`2d0fbc1`](https://github.com/flimedime0/discord-lm-app/commit/2d0fbc13d72fb481e6d6a7ac6f1dfae9d46ef7b4))
+
+### Documentation
+
+- Document dev bootstrap and issue sync
+  ([`e22823d`](https://github.com/flimedime0/discord-lm-app/commit/e22823d058ca6d4c0a2fc5e3a4fadcca9dcddd91))
+
+### Refactoring
+
+- Search and create task issues via gh
+  ([`195ba19`](https://github.com/flimedime0/discord-lm-app/commit/195ba196eaac5be83bb154be4c7cabede6b3ef76))
+
 
 ## v0.3.2 (2025-05-22)
 
