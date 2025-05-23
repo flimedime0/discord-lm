@@ -31,14 +31,12 @@ def run_gh_command(args: list[str], input_str: str | None = None) -> str:
 def ensure_task_issue(task_id: str) -> int:
     repo = os.environ["GITHUB_REPOSITORY"]
 
-    # Use 'gh issue list' to search, it's more robust for this
+    # Use 'gh search issues' for robust searching
+    search_query = f"{task_id} in:title repo:{repo} type:issue label:Task-ID"
     search_args = [
-        "issue",
-        "list",
-        "--repo",
-        repo,
-        "--search",
-        f"{task_id} in:title type:issue label:Task-ID",
+        "search",
+        "issues",
+        search_query,
         "--json",
         "number",
         "--limit",
@@ -49,17 +47,19 @@ def ensure_task_issue(task_id: str) -> int:
 
     try:
         issues = json.loads(stdout)
-        if issues:
+        if issues:  # If list is not empty, issue exists
+            print(f"Found existing issue for '{task_id}': #{issues[0]['number']}")
             return issues[0]["number"]
     except json.JSONDecodeError:
         print(
-            f"Warning: Could not parse JSON from 'gh issue list': {stdout}",
+            f"Warning: Could not parse JSON from 'gh search issues': {stdout}",
             file=sys.stderr,
         )
         # Fall through to create if search parsing failed or returned empty
 
     # If no issue found, create it
     print(f"No existing issue found for '{task_id}'. Creating new issue.")
+    # For creation, 'gh issue create' is fine
     create_args = [
         "issue",
         "create",
