@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [Unreleased]
+
+### Fixed
+- Ensure ensure_task_issue.py only prints the issue number to stdout for workflow output capturing.
+
 
 ## v0.3.4 (2025-05-23)
 

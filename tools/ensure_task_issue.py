@@ -58,7 +58,10 @@ def ensure_task_issue(task_id: str) -> int:
         issues_list = json.loads(stdout)
         if issues_list:  # If list is not empty, issue exists
             issue_number = issues_list[0]["number"]
-            print(f"Found existing issue for '{task_id}': #{issue_number}")
+            print(
+                f"Found existing issue for '{task_id}': #{issue_number}",
+                file=sys.stderr,
+            )
             return issue_number
     except json.JSONDecodeError:
         print(
@@ -73,7 +76,10 @@ def ensure_task_issue(task_id: str) -> int:
         )
 
     # If no issue found, create it
-    print(f"No existing issue found for '{task_id}'. Creating new issue.")
+    print(
+        f"No existing issue found for '{task_id}'. Creating new issue.",
+        file=sys.stderr,
+    )
     create_args = [
         "issue",
         "create",
@@ -89,7 +95,10 @@ def ensure_task_issue(task_id: str) -> int:
     created_issue_url = run_gh_command(create_args)
     try:
         issue_number = int(created_issue_url.split("/")[-1])
-        print(f"Successfully created issue #{issue_number} with URL: {created_issue_url}")
+        print(
+            f"Successfully created issue #{issue_number} with URL: {created_issue_url}",
+            file=sys.stderr,
+        )
         return issue_number
     except (ValueError, IndexError) as e:
         print(
