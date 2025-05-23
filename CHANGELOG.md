@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [Unreleased]
+
+### Fixed
+- Refactor ensure_task_issue.py to pass individual search terms to gh search issues.
+
 
 ## v0.3.3 (2025-05-23)
 
