@@ -5,6 +5,7 @@
 ### Fixed
 
 - Correct indentation and duplicate lines in `issue-sync.yml`; workflow now parses.
+- Remove indented here-doc in `issue-sync.yml`; workflow now runs without IndentationError.
 
 ## v0.3.2 (2025-05-22)
 
