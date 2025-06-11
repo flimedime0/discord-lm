@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+- Enable bot interaction in DMs and Group DMs via App authorization.
+- Implement /chat slash command for sending prompts to the AI.
+
 ### Documentation
 - Complete overhaul of README.md with detailed setup, development, and automation instructions.
 - Enhanced Codecov configuration for PR comments and patch coverage targets.

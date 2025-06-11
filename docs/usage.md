@@ -11,3 +11,8 @@
 ```bash
 docker compose up --build -d
 ```
+
+## Interacting with the Bot
+
+- Use the `/chat` slash command to send prompts. The command works in servers, DMs and group DMs.
+- Authorize the App using your OAuth2 URL to enable DM or group DM usage.

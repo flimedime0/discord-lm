@@ -39,7 +39,8 @@ Full documentation → <https://flimedime0.github.io/discord-lm-app/>
 
 ### Discord Interaction
 - Bot replies when mentioned (`@YourBot how are you?`).
-- Slash commands are planned for the future.
+- `/chat` slash command works in servers, DMs and Group DMs.
+- Enable the bot in personal DMs by authorizing the App via the OAuth2 URL from the Discord developer portal.
 
 ### Message Handling
 - Messages are split into 2 000‑character chunks.

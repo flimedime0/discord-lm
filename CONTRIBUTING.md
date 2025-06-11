@@ -24,6 +24,7 @@ def test_example(monkeypatch):
 
 ## Running the bot locally
 - `python -m discord_lm_bot.discord_bot` (needs `DISCORD_TOKEN` env var)
+- When testing slash commands, sync the command tree (`tree.sync()`) and authorize the bot as an App if running in DMs.
 
 ## Releasing
 - Releases are fully automated via **python-semantic-release** on every merge to **main**. Use Conventional Commit messages (`feat: …`, `fix: …`, `chore: …`) so the changelog & version bump are generated correctly.

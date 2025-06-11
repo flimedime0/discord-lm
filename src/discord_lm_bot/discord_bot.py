@@ -3,16 +3,21 @@ import json
 import re
 
 import discord
+from discord import app_commands
+import traceback
 
 from .config import DISCORD_TOKEN, OPENAI_API_KEY
 from .openai_client import call_chat, DEFAULT_O3_PARAMS, SYSTEM_CITE
 from .search_tool import SEARCH_TOOL, do_search
+from .splitter import split_message
 
 URL_RE = re.compile(r"https?://\S+")
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.dm_messages = True
 client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
 
 async def send_slow_message(channel, text, chunk=192, delay=1.0, max_len=2000):
@@ -115,9 +120,58 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
     return msg.content
 
 
+@tree.command(name="chat", description="Send a prompt to the AI model in servers or DMs.")
+@app_commands.describe(prompt="The prompt or question for the AI.")
+@app_commands.allowed_installs(guilds=True, users=True)
+@app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
+async def slash_chat(interaction: discord.Interaction, prompt: str):
+    """Handles the /chat slash command."""
+    try:
+        await interaction.response.defer(thinking=True, ephemeral=False)
+
+        model_to_use = "o3"
+        params_to_use = DEFAULT_O3_PARAMS.copy()
+
+        reply_text = await query_chatgpt(
+            prompt=prompt,
+            model=model_to_use,
+            history=None,
+            **params_to_use,
+        )
+
+        if len(reply_text) <= 2000:
+            await interaction.followup.send(reply_text)
+        else:
+            chunks = split_message(reply_text, 1950)
+            for i, chunk_text in enumerate(chunks):
+                if i == 0:
+                    await interaction.followup.send(chunk_text)
+                else:
+                    if isinstance(interaction.channel, discord.abc.Messageable):
+                        await interaction.channel.send(chunk_text)
+
+    except Exception as e:
+        error_message = f"Sorry, I encountered an error: {type(e).__name__}"
+        channel_id = getattr(interaction.channel, "id", "unknown")
+        print(f"Error in /chat command for user {interaction.user.id} in channel {channel_id}:")
+        traceback.print_exc()
+        if interaction.response.is_done():
+            await interaction.followup.send(error_message, ephemeral=True)
+        else:
+            await interaction.response.send_message(error_message, ephemeral=True)
+
+
 @client.event
 async def on_ready():
     print(f"Logged in as {client.user}")
+    try:
+        await tree.sync()
+        print(
+            f"Slash commands synced globally: {[command.name for command in tree.get_commands()]}"
+        )
+    except Exception as e:
+        print(f"Failed to sync slash commands: {e}")
+        traceback.print_exc()
 
 
 @client.event
