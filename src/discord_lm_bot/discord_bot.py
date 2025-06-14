@@ -1,13 +1,15 @@
-import asyncio
 import json
 import re
+import sqlite3
 
 import discord
 from discord import app_commands
 import traceback
 
 from .config import DISCORD_TOKEN, OPENAI_API_KEY
-from .openai_client import call_chat, DEFAULT_O3_PARAMS, SYSTEM_CITE
+from .database import DB_PATH, get_user_settings, set_user_setting, setup_database
+from .llm_config import GLOBAL_DEFAULTS, SUPPORTED_PARAMS
+from .openai_client import call_chat
 from .search_tool import SEARCH_TOOL, do_search
 from .splitter import split_message
 
@@ -20,58 +22,11 @@ client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
 
-async def send_slow_message(channel, text, chunk=192, delay=1.0, max_len=2000):
-    """Reveals `text` in 192-char chunks every second.
-    When content > max_len, closes sentence at last period and continues in a
-    new Discord message."""
-    sent = await channel.send("…")
-    displayed = ""
-    async with channel.typing():
-        for i, ch in enumerate(text, start=1):
-            displayed += ch
-            hit_chunk = (i % chunk == 0) or (i == len(text))
-            if hit_chunk:
-                if len(displayed) > max_len:
-                    # provisional cut at Discord’s hard cap
-                    split_at = max_len - 1
-
-                    # walk backward for the last URL before the split point
-                    last_url = None
-                    for m in URL_RE.finditer(displayed, 0, split_at + 1):
-                        last_url = m
-
-                    if last_url and last_url.end() > split_at:
-                        split_at = max(0, last_url.start() - 1)
-
-                    # if still mid-word, back up to previous space or period
-                    if displayed[split_at].isalnum():
-                        p_space = displayed.rfind(" ", 0, split_at)
-                        p_dot = displayed.rfind(".", 0, split_at)
-                        p = max(p_space, p_dot)
-                        if p != -1:
-                            split_at = p
-
-                    segment = displayed[: split_at + 1]
-                    remainder = displayed[split_at + 1 :]
-
-                    await sent.edit(content=segment.strip())
-
-                    # create new placeholder ONLY if there’s more text
-                    if remainder.strip():
-                        sent = await channel.send("…")
-                        displayed = remainder.lstrip()
-                    else:
-                        break  # no leftover text → exit loop
-                else:
-                    await sent.edit(content=displayed)
-                await asyncio.sleep(delay)
-    return sent
-
-
-async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
-    merged = DEFAULT_O3_PARAMS.copy()
-    merged.update(overrides)
-    params = {k: v for k, v in merged.items() if v is not None}
+async def query_chatgpt(*, prompt: str, user_id: int) -> tuple[str, bool]:
+    settings = get_user_settings(user_id) or GLOBAL_DEFAULTS
+    model = settings.get("active_model") or GLOBAL_DEFAULTS["model"]
+    params = GLOBAL_DEFAULTS["params"].copy()
+    params.update(settings.get("params", {}))
 
     # 1st request – let the model decide if it needs search unless forced
     r1 = await call_chat(
@@ -92,32 +47,26 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
             args.get("num_results", 8),
         )
 
-        # Build conversation so far with citation rules
-        history = []
-        if SYSTEM_CITE:
-            history.append({"role": "system", "content": SYSTEM_CITE})
-        history.extend(
-            [
-                {"role": "user", "content": prompt},
-                msg,  # assistant message containing tool_calls
-                {
-                    "role": "tool",
-                    "tool_call_id": call.id,
-                    "name": "web_search",
-                    "content": result_json,
-                },
-            ]
-        )
+        history = [
+            {"role": "user", "content": prompt},
+            msg,
+            {
+                "role": "tool",
+                "tool_call_id": call.id,
+                "name": "web_search",
+                "content": result_json,
+            },
+        ]
 
         r2 = await call_chat(
             model=model,
             messages=history,
             **params,
         )
-        return r2.choices[0].message.content
+        return r2.choices[0].message.content, True
 
     # No search needed
-    return msg.content
+    return msg.content, False
 
 
 @tree.command(name="chat", description="Send a prompt to the AI model in servers or DMs.")
@@ -127,28 +76,20 @@ async def query_chatgpt(prompt: str, model: str = "o3", **overrides) -> str:
 async def slash_chat(interaction: discord.Interaction, prompt: str):
     """Handles the /chat slash command."""
     try:
-        await interaction.response.defer(thinking=True, ephemeral=False)
+        await interaction.response.defer(thinking=False, ephemeral=False)
 
-        model_to_use = "o3"
-        params_to_use = DEFAULT_O3_PARAMS.copy()
-
-        reply_text = await query_chatgpt(
+        reply_text, search_used = await query_chatgpt(
             prompt=prompt,
-            model=model_to_use,
-            history=None,
-            **params_to_use,
+            user_id=interaction.user.id,
         )
 
-        if len(reply_text) <= 2000:
-            await interaction.followup.send(reply_text)
-        else:
-            chunks = split_message(reply_text, 1950)
-            for i, chunk_text in enumerate(chunks):
-                if i == 0:
-                    await interaction.followup.send(chunk_text)
-                else:
-                    if isinstance(interaction.channel, discord.abc.Messageable):
-                        await interaction.channel.send(chunk_text)
+        final_reply = f"{interaction.user.mention} {reply_text}"
+        if search_used:
+            final_reply += "\n\n---\n*🔍 Web search used for this response.*"
+
+        chunks = split_message(final_reply)
+        for chunk in chunks:
+            await interaction.followup.send(chunk)
 
     except Exception as e:
         error_message = f"Sorry, I encountered an error: {type(e).__name__}"
@@ -159,6 +100,77 @@ async def slash_chat(interaction: discord.Interaction, prompt: str):
             await interaction.followup.send(error_message, ephemeral=True)
         else:
             await interaction.response.send_message(error_message, ephemeral=True)
+
+
+manage = app_commands.Group(name="manage", description="Manage your bot settings")
+
+
+@manage.command(name="view", description="View your current settings")
+async def manage_view(interaction: discord.Interaction):
+    settings = get_user_settings(interaction.user.id) or GLOBAL_DEFAULTS
+    await interaction.response.send_message(str(settings), ephemeral=True)
+
+
+@manage.command(name="use_model", description="Choose your active model")
+@app_commands.describe(model="Model to use")
+@app_commands.choices(
+    model=[
+        app_commands.Choice(name="gpt-4o", value="gpt-4o"),
+        app_commands.Choice(name="o3", value="o3"),
+    ]
+)
+async def manage_use_model(interaction: discord.Interaction, model: app_commands.Choice[str]):
+    set_user_setting(interaction.user.id, "active_model", model.value)
+    await interaction.response.send_message(f"Model set to {model.value}", ephemeral=True)
+
+
+@manage.command(name="tune_parameter", description="Set a parameter for the current model")
+@app_commands.describe(name="Parameter name", value="Value for the parameter")
+@app_commands.choices(
+    name=[
+        app_commands.Choice(name="temperature", value="temperature"),
+        app_commands.Choice(name="top_p", value="top_p"),
+        app_commands.Choice(name="max_tokens", value="max_tokens"),
+    ]
+)
+async def manage_tune_parameter(
+    interaction: discord.Interaction, name: app_commands.Choice[str], value: str
+):
+    settings = get_user_settings(interaction.user.id) or GLOBAL_DEFAULTS
+    model = settings.get("active_model") or GLOBAL_DEFAULTS["model"]
+    if name.value not in SUPPORTED_PARAMS.get(model, []):
+        await interaction.response.send_message(
+            "Parameter not supported for this model", ephemeral=True
+        )
+        return
+    try:
+        if name.value in {"temperature", "top_p"}:
+            val = float(value)
+        else:
+            val = int(value)
+    except ValueError:
+        await interaction.response.send_message("Invalid value", ephemeral=True)
+        return
+    if name.value == "temperature" and not (0 <= val <= 2):
+        await interaction.response.send_message("temperature must be 0-2", ephemeral=True)
+        return
+    if name.value == "top_p" and not (0 <= val <= 1):
+        await interaction.response.send_message("top_p must be 0-1", ephemeral=True)
+        return
+    set_user_setting(interaction.user.id, name.value, val)
+    await interaction.response.send_message(f"{name.value} set to {val}", ephemeral=True)
+
+
+@manage.command(name="reset_all", description="Reset all settings")
+async def manage_reset(interaction: discord.Interaction):
+    conn = sqlite3.connect(DB_PATH)
+    with conn:
+        conn.execute("DELETE FROM user_preferences WHERE user_id=?", (interaction.user.id,))
+    conn.close()
+    await interaction.response.send_message("Settings reset", ephemeral=True)
+
+
+tree.add_command(manage)
 
 
 @client.event
@@ -180,31 +192,10 @@ async def on_message(message: discord.Message):
     if message.author == client.user:
         return
 
-    # respond only if the bot is mentioned
-    if client.user in message.mentions:
-        # strip the mention text from the prompt
-        prompt = message.content
-        for mention in message.mentions:
-            if mention == client.user:
-                prompt = prompt.replace(f"<@{mention.id}>", "").strip()
-
-        if not prompt:
-            await message.channel.send("Ask me something after the mention.")
-            return
-
-        try:
-            async with message.channel.typing():
-                reply = await query_chatgpt(prompt)
-            await send_slow_message(message.channel, reply)
-        except Exception as e:
-            await message.channel.send("Error querying ChatGPT.")
-            print(e)
-
-    # else: ignore message (no command prefix needed)
-
 
 def run_bot() -> None:
     if not DISCORD_TOKEN or not OPENAI_API_KEY:
         print("Environment variables DISCORD_TOKEN and OPENAI_API_KEY must be set.")
     else:
+        setup_database()
         client.run(DISCORD_TOKEN)
