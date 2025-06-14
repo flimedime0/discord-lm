@@ -6,6 +6,7 @@
 - Enable bot interaction in DMs and Group DMs via App authorization.
 - Implement /chat slash command for sending prompts to the AI.
 - Slash-command-only refactor with user-managed settings stored in SQLite (feature-slash-command-overhaul-01).
+- Select menu for model choice, image attachments (up to 10) in /chat, and per-user concurrency lock (feature-select-menu-image-lock-01).
 
 ### Documentation
 - Complete overhaul of README.md with detailed setup, development, and automation instructions.
