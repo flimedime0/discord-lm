@@ -7,3 +7,5 @@ src/discord_lm_bot.egg-info/
 /htmlcov/
 
 src/discord_lm_app.egg-info/
+data/
+data/*.sqlite3-journal
