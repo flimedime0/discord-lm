@@ -15,5 +15,6 @@ docker compose up --build -d
 ## Interacting with the Bot
 
 - Use the `/chat` slash command to send prompts. It works in servers, DMs and group DMs.
-- Adjust your preferences with the `/manage` command group.
+- You can attach up to 10 images to `/chat` for multimodal prompts. You may also specify `model=gpt-4o` or `model=o3` to persist your choice.
+- Replies mention you at the end of each message.
 - Authorize the App using your OAuth2 URL to enable DM or group DM usage.

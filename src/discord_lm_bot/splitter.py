@@ -5,13 +5,14 @@ import re
 URL_RE = re.compile(r"https?://\S+")
 
 
-def split_message(text: str, max_len: int = 2000) -> list[str]:
-    """Split ``text`` into Discord-safe segments of length ``max_len``."""
+def split_message(text: str, max_len: int = 2000, suffix_len: int = 0) -> list[str]:
+    """Split ``text`` into Discord-safe segments of length ``max_len`` considering a suffix."""
+    effective_max = max_len - suffix_len
     segments: list[str] = []
     remainder = text
-    while len(remainder) > max_len:
-        displayed = remainder[:max_len]
-        split_at = max_len - 1
+    while len(remainder) > effective_max:
+        displayed = remainder[:effective_max]
+        split_at = effective_max - 1
         last_url = None
         for m in URL_RE.finditer(displayed, 0, split_at + 1):
             last_url = m
