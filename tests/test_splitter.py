@@ -25,7 +25,7 @@ def test_split_message_no_break_space():
     assert parts == ["a" * 1000, "b" * 1000]
 
 
-def test_split_message_prefix_len():
+def test_split_message_suffix_len():
     text = "x" * 1995
-    parts = split_message(text, prefix_len=10)
+    parts = split_message(text, suffix_len=10)
     assert all(len(p) <= 1990 for p in parts)

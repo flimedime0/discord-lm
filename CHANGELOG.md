@@ -12,6 +12,9 @@
 - Complete overhaul of README.md with detailed setup, development, and automation instructions.
 - Enhanced Codecov configuration for PR comments and patch coverage targets.
 
+### Changed
+- Consolidated model selection into /chat; mention now appears at message end; added typing indicator in DMs. (feature-chat-simplify-02)
+
 
 ## v0.3.7 (2025-05-23)
 

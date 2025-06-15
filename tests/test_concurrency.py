@@ -54,4 +54,4 @@ async def test_concurrency_lock(monkeypatch):
 
     await task1
 
-    assert i2.response.sent.startswith("\U0001f6a7")
+    assert i2.response.sent == "Please wait for my current reply to finish."

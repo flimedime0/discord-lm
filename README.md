@@ -39,7 +39,7 @@ Full documentation → <https://flimedime0.github.io/discord-lm-app/>
 
 ### Discord Interaction
 - Use the `/chat` slash command in servers, DMs and group DMs.
-- Configure models and parameters with the `/manage` command group.
+- Switch models directly in `/chat` using the `model:` option (`gpt-4o` or `o3`); the bot remembers your choice and mentions you at the end of replies.
 - Enable the bot in personal DMs by authorizing the App via the OAuth2 URL from the Discord developer portal.
 
 ### Message Handling

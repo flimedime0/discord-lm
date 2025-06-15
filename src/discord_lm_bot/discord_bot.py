@@ -1,15 +1,13 @@
 import json
 import re
-import sqlite3
 
 import discord
 from discord import app_commands
 import traceback
 
 from .config import DISCORD_TOKEN, OPENAI_API_KEY
-from .database import DB_PATH, get_user_settings, setup_database
+from .database import get_user_settings, set_user_setting, setup_database
 from .llm_config import GLOBAL_DEFAULTS
-from .ui_model_select import ModelSelect
 from .openai_client import call_chat
 from .search_tool import SEARCH_TOOL, do_search
 from .splitter import split_message
@@ -78,12 +76,16 @@ async def query_chatgpt(
 @app_commands.describe(prompt="The prompt or question for the AI.")
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
-async def slash_chat(interaction: discord.Interaction, prompt: str):
+async def slash_chat(
+    interaction: discord.Interaction,
+    prompt: str,
+    model: app_commands.Choice[str] | None = None,
+):
     """Handles the /chat slash command."""
     try:
         if interaction.user.id in _active_queries:
             await interaction.response.send_message(
-                "\U0001f6a7 Please wait for my current reply to finish.",
+                "Please wait for my current reply to finish.",
                 ephemeral=True,
             )
             return
@@ -100,20 +102,21 @@ async def slash_chat(interaction: discord.Interaction, prompt: str):
                 ephemeral=True,
             )
 
+        if model is not None:
+            set_user_setting(interaction.user.id, "active_model", model.value)
+
         reply_text, search_used = await query_chatgpt(
             prompt=prompt,
             user_id=interaction.user.id,
             image_urls=[img.url for img in images],
         )
 
-        prefix = f"{interaction.user.mention} "
-        final_reply = reply_text
-        if search_used:
-            final_reply += "\n\n---\n*🔍 Web search used for this response.*"
+        suffix = f" – {interaction.user.mention}"
+        search_notice = "\n\nWeb search was used to answer your question." if search_used else ""
 
-        chunks = split_message(final_reply, prefix_len=len(prefix))
+        chunks = split_message(reply_text + suffix + search_notice, suffix_len=len(suffix))
         for chunk in chunks:
-            await interaction.followup.send(prefix + chunk)
+            await interaction.followup.send(chunk)
 
     except Exception as e:
         error_message = f"Sorry, I encountered an error: {type(e).__name__}"
@@ -126,35 +129,6 @@ async def slash_chat(interaction: discord.Interaction, prompt: str):
             await interaction.response.send_message(error_message, ephemeral=True)
     finally:
         _active_queries.discard(interaction.user.id)
-
-
-manage = app_commands.Group(name="manage", description="Manage your bot settings")
-
-
-@manage.command(name="view", description="View your current settings")
-async def manage_view(interaction: discord.Interaction):
-    settings = get_user_settings(interaction.user.id) or GLOBAL_DEFAULTS
-    await interaction.response.send_message(str(settings), ephemeral=True)
-
-
-@manage.command(name="model", description="Pick your active model")
-async def manage_model(interaction: discord.Interaction):
-    view = ModelSelect(interaction.user.id)
-    await interaction.response.send_message(
-        "Select your preferred model:", view=view, ephemeral=True
-    )
-
-
-@manage.command(name="reset_all", description="Reset all settings")
-async def manage_reset(interaction: discord.Interaction):
-    conn = sqlite3.connect(DB_PATH)
-    with conn:
-        conn.execute("DELETE FROM user_preferences WHERE user_id=?", (interaction.user.id,))
-    conn.close()
-    await interaction.response.send_message("Settings reset", ephemeral=True)
-
-
-tree.add_command(manage)
 
 
 @client.event
@@ -179,7 +153,7 @@ async def on_message(message: discord.Message):
     if isinstance(message.channel, discord.DMChannel):
         if message.author.id in _active_queries:
             await message.channel.send(
-                "\U0001f6a7 Please wait for my current reply to finish.",
+                "Please wait for my current reply to finish.",
             )
             return
         _active_queries.add(message.author.id)
@@ -188,18 +162,19 @@ async def on_message(message: discord.Message):
             images = [
                 a for a in all_attachments if a.content_type and a.content_type.startswith("image/")
             ][:10]
-            reply_text, search_used = await query_chatgpt(
-                prompt=message.content,
-                user_id=message.author.id,
-                image_urls=[img.url for img in images],
-            )
-            prefix = f"{message.author.mention} "
-            final_reply = reply_text
-            if search_used:
-                final_reply += "\n\n---\n*🔍 Web search used for this response.*"
-            chunks = split_message(final_reply, prefix_len=len(prefix))
-            for chunk in chunks:
-                await message.channel.send(prefix + chunk)
+            async with message.channel.typing():
+                reply_text, search_used = await query_chatgpt(
+                    prompt=message.content,
+                    user_id=message.author.id,
+                    image_urls=[img.url for img in images],
+                )
+                suffix = f" – {message.author.mention}"
+                search_notice = (
+                    "\n\nWeb search was used to answer your question." if search_used else ""
+                )
+                chunks = split_message(reply_text + suffix + search_notice, suffix_len=len(suffix))
+                for chunk in chunks:
+                    await message.channel.send(chunk)
         except Exception:
             await message.channel.send("Sorry, something went wrong.")
         finally:
