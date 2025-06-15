@@ -5,9 +5,9 @@ import re
 URL_RE = re.compile(r"https?://\S+")
 
 
-def split_message(text: str, max_len: int = 2000, prefix_len: int = 0) -> list[str]:
-    """Split ``text`` into Discord-safe segments of length ``max_len`` considering a prefix."""
-    effective_max = max_len - prefix_len
+def split_message(text: str, max_len: int = 2000, suffix_len: int = 0) -> list[str]:
+    """Split ``text`` into Discord-safe segments of length ``max_len`` considering a suffix."""
+    effective_max = max_len - suffix_len
     segments: list[str] = []
     remainder = text
     while len(remainder) > effective_max:
