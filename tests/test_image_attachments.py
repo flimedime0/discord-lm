@@ -41,7 +41,7 @@ async def test_attachment_limit(monkeypatch):
 
     async def fake_reply(**kwargs):
         recorded["urls"] = kwargs["image_urls"]
-        return "ok", False
+        return "ok", False, "gpt-4o"
 
     monkeypatch.setattr(discord_bot, "query_chatgpt", fake_reply)
 
@@ -63,7 +63,7 @@ async def test_attachment_pass_through(monkeypatch):
 
     async def fake_reply(**kwargs):
         recorded["urls"] = kwargs["image_urls"]
-        return "ok", False
+        return "ok", False, "gpt-4o"
 
     monkeypatch.setattr(discord_bot, "query_chatgpt", fake_reply)
 

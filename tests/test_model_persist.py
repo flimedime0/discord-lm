@@ -46,7 +46,7 @@ async def test_model_arg_persists(tmp_path, monkeypatch):
     async def fake_reply(**kwargs):
         settings = database.get_user_settings(kwargs["user_id"])
         recorded.append(settings["active_model"])
-        return "ok", False
+        return "ok", False, "gpt-4o"
 
     monkeypatch.setattr(discord_bot, "query_chatgpt", fake_reply)
 
