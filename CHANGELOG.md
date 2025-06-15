@@ -14,6 +14,7 @@
 
 ### Changed
 - Consolidated model selection into /chat; mention now appears at message end; added typing indicator in DMs. (feature-chat-simplify-02)
+- Added model override choices for /chat and removed emoji from warnings.
 
 
 ## v0.3.7 (2025-05-23)
