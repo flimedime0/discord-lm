@@ -1,4 +1,4 @@
-import asyncio
+# File purpose: Test message footer and mention handling.
 from types import SimpleNamespace
 
 import pytest
@@ -35,23 +35,19 @@ class DummyInteraction:
         self.response = DummyResponse()
         self.followup = DummyFollowup()
         self.channel = SimpleNamespace(id=123)
+        self.attachments = []
 
 
 @pytest.mark.asyncio
-async def test_concurrency_lock(monkeypatch):
-    async def slow_reply(**kwargs):
-        await asyncio.sleep(0.1)
-        return "ok", False, "gpt-4o"
+async def test_footer_and_mentions(monkeypatch):
+    async def fake_reply(**kwargs):
+        return "x" * 2100, False, "gpt-4o"
 
-    monkeypatch.setattr(discord_bot, "query_chatgpt", slow_reply)
+    monkeypatch.setattr(discord_bot, "query_chatgpt", fake_reply)
 
-    i1 = DummyInteraction(1)
-    i2 = DummyInteraction(1)
+    i = DummyInteraction(1)
+    await discord_bot.slash_chat.callback(i, prompt="hi")
 
-    task1 = asyncio.create_task(discord_bot.slash_chat.callback(i1, prompt="hi"))
-    await asyncio.sleep(0)  # let task1 start and add to lock
-    await discord_bot.slash_chat.callback(i2, prompt="hi")
-
-    await task1
-
-    assert i2.response.sent == "Please wait for my current reply to finish."
+    assert len(i.followup.messages) == 2
+    assert all(m.endswith(" – @1") for m in i.followup.messages)
+    assert "Model used: gpt-4o" in i.followup.messages[-1]
