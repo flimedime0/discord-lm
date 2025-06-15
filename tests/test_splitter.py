@@ -14,9 +14,9 @@ def test_split_message_no_blank_segment():
 
 
 def test_split_message_unicode_and_urls():
-    text = "🙂" * 1000 + " https://example.com/foo" + " bar"
+    text = "あ" * 1000 + " https://example.com/foo" + " bar"
     parts = split_message(text, max_len=1005)
-    assert parts == ["🙂" * 1000, "https://example.com/foo bar"]
+    assert parts == ["あ" * 1000, "https://example.com/foo bar"]
 
 
 def test_split_message_no_break_space():

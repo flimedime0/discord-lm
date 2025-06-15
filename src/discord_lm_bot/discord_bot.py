@@ -74,10 +74,18 @@ async def query_chatgpt(
 
 @tree.command(name="chat", description="Send a prompt to the AI model in servers or DMs.")
 @app_commands.describe(prompt="The prompt or question for the AI.")
+@app_commands.describe(model="Optional model override")
+@app_commands.choices(
+    model=[
+        app_commands.Choice(name="gpt-4o", value="gpt-4o"),
+        app_commands.Choice(name="o3", value="o3"),
+    ]
+)
 @app_commands.allowed_installs(guilds=True, users=True)
 @app_commands.allowed_contexts(guilds=True, dms=True, private_channels=True)
 async def slash_chat(
     interaction: discord.Interaction,
+    *,
     prompt: str,
     model: app_commands.Choice[str] | None = None,
 ):
@@ -98,7 +106,7 @@ async def slash_chat(
 
         if len(all_attachments) > 10:
             await interaction.followup.send(
-                "\u26a0\ufe0f Only the first 10 images were processed; the rest were ignored.",
+                "Only the first 10 images were processed; the rest were ignored.",
                 ephemeral=True,
             )
 
