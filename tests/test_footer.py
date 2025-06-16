@@ -50,4 +50,3 @@ async def test_footer_and_mentions(monkeypatch):
 
     assert len(i.followup.messages) == 2
     assert all(m.endswith(" – @1") for m in i.followup.messages)
-    assert "Model used: gpt-4o" in i.followup.messages[-1]

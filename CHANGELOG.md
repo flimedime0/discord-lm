@@ -15,8 +15,13 @@
 ### Changed
 - Consolidated model selection into /chat; mention now appears at message end; added typing indicator in DMs. (feature-chat-simplify-02)
 - Added model override choices for /chat and removed emoji from warnings.
-- Replies now tag the user at the end of every chunk and display the model used.
-- `/chat` slash command now works in direct messages; plain-text DM handler removed. (feature-dm-slash-chat-03)
+- Replies now tag the user at the end of every chunk.
+- `/chat` slash command now works in direct messages.
+
+### Fixed
+- Restored plain-text DM handler with concurrency lock.
+- Concurrency lock now persists until all message chunks are sent.
+- Suppress errors when typing indicator is forbidden in DMs.
 
 
 ## v0.3.7 (2025-05-23)
