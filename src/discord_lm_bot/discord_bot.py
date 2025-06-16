@@ -90,14 +90,14 @@ async def slash_chat(
     model: app_commands.Choice[str] | None = None,
 ):
     """Handles the /chat slash command."""
+    if interaction.user.id in _active_queries:
+        await interaction.response.send_message(
+            "Please wait for my current reply to finish.",
+            ephemeral=True,
+        )
+        return
+    _active_queries.add(interaction.user.id)
     try:
-        if interaction.user.id in _active_queries:
-            await interaction.response.send_message(
-                "Please wait for my current reply to finish.",
-                ephemeral=True,
-            )
-            return
-        _active_queries.add(interaction.user.id)
         all_attachments = getattr(interaction, "attachments", [])
         images = [
             a for a in all_attachments if a.content_type and a.content_type.startswith("image/")
@@ -114,12 +114,20 @@ async def slash_chat(
             set_user_setting(interaction.user.id, "active_model", model.value)
 
         if isinstance(interaction.channel, discord.DMChannel):
-            async with interaction.channel.typing():
+            try:
+                cm = interaction.channel.typing()
+                await cm.__aenter__()
+            except discord.Forbidden:
+                cm = None
+            try:
                 reply_text, search_used, model_used = await query_chatgpt(
                     prompt=prompt,
                     user_id=interaction.user.id,
                     image_urls=[img.url for img in images],
                 )
+            finally:
+                if cm:
+                    await cm.__aexit__(None, None, None)
         else:
             reply_text, search_used, model_used = await query_chatgpt(
                 prompt=prompt,
@@ -129,9 +137,8 @@ async def slash_chat(
 
         suffix = f" – {interaction.user.mention}"
         search_notice = "\n\nWeb search was used to answer your question." if search_used else ""
-        footer = f"\n\nModel used: {model_used}"
 
-        chunks = split_message(reply_text + search_notice + footer, suffix_len=len(suffix))
+        chunks = split_message(reply_text + search_notice, suffix_len=len(suffix))
         for chunk in chunks:
             await interaction.followup.send(chunk + suffix)
 
@@ -146,6 +153,43 @@ async def slash_chat(
             await interaction.response.send_message(error_message, ephemeral=True)
     finally:
         _active_queries.discard(interaction.user.id)
+
+
+@client.event
+async def on_message(message: discord.Message):
+    if message.author == client.user:
+        return
+    if isinstance(message.channel, discord.DMChannel):
+        if message.author.id in _active_queries:
+            await message.channel.send("Please wait for my current reply to finish.")
+            return
+        _active_queries.add(message.author.id)
+        try:
+            try:
+                cm = message.channel.typing()
+                await cm.__aenter__()
+            except discord.Forbidden:
+                cm = None
+            try:
+                reply, used_search, _ = await query_chatgpt(
+                    prompt=message.content,
+                    user_id=message.author.id,
+                    image_urls=[
+                        a.url
+                        for a in message.attachments
+                        if a.content_type and a.content_type.startswith("image/")
+                    ][:10],
+                )
+            finally:
+                if cm:
+                    await cm.__aexit__(None, None, None)
+            suffix = f" – {message.author.mention}"
+            if used_search:
+                reply += "\n\nWeb search was used to answer your question."
+            for part in split_message(reply, suffix_len=len(suffix)):
+                await message.channel.send(part + suffix)
+        finally:
+            _active_queries.discard(message.author.id)
 
 
 @client.event

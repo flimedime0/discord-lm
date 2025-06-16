@@ -40,18 +40,22 @@ class DummyInteraction:
 @pytest.mark.asyncio
 async def test_concurrency_lock(monkeypatch):
     async def slow_reply(**kwargs):
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.3)
         return "ok", False, "gpt-4o"
 
     monkeypatch.setattr(discord_bot, "query_chatgpt", slow_reply)
 
     i1 = DummyInteraction(1)
     i2 = DummyInteraction(1)
+    i3 = DummyInteraction(1)
 
     task1 = asyncio.create_task(discord_bot.slash_chat.callback(i1, prompt="hi"))
-    await asyncio.sleep(0)  # let task1 start and add to lock
+    await asyncio.sleep(0.05)  # let task1 start and add to lock
     await discord_bot.slash_chat.callback(i2, prompt="hi")
+    await asyncio.sleep(0.1)
+    await discord_bot.slash_chat.callback(i3, prompt="hi")
 
     await task1
 
     assert i2.response.sent == "Please wait for my current reply to finish."
+    assert i3.response.sent == "Please wait for my current reply to finish."
